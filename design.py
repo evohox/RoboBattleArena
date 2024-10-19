@@ -8,12 +8,12 @@ from PyQt5.QtWidgets import (
     QGraphicsDropShadowEffect,
 )
 from PyQt5.QtGui import QFont, QPixmap
-from PyQt5.QtCore import QTimer, Qt, QPropertyAnimation
+from PyQt5.QtCore import QTimer, Qt
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        MainWindow.setObjectName("Arena")
+        MainWindow.setObjectName("Arena")  # Устанавливаем имя для главного окна
 
         # Устанавливаем стиль без рамки
         MainWindow.setWindowFlags(Qt.FramelessWindowHint)
@@ -27,18 +27,22 @@ class Ui_MainWindow(object):
 
         # Создаем QLabel для фона
         self.background_label = QLabel(self.central_widget)
-        self.background_label.setPixmap(QPixmap("background.jpg"))
-        self.background_label.setScaledContents(True)
-        self.background_label.setGeometry(0, 0, MainWindow.width(), MainWindow.height())
+        self.background_label.setPixmap(
+            QPixmap("background.jpg")
+        )  # Устанавливаем фоновое изображение
+        self.background_label.setScaledContents(True)  # Масштабируем содержимое
+        self.background_label.setGeometry(
+            0, 0, MainWindow.width(), MainWindow.height()
+        )  # Устанавливаем размеры
 
-        # Основной layout
+        # Основной layout для центрального виджета
         main_layout = QVBoxLayout(self.central_widget)
         main_layout.setContentsMargins(0, 0, 0, 0)  # Убираем отступы
 
         # Создаем горизонтальный layout для команд и таймера
         central_layout = QHBoxLayout()
-        central_layout.setAlignment(Qt.AlignCenter)
-        central_layout.setContentsMargins(0, 0, 0, 0)  # Отступы слева и справа
+        central_layout.setAlignment(Qt.AlignCenter)  # Выравнивание по центру
+        central_layout.setContentsMargins(0, 0, 0, 0)  # Убираем отступы
 
         # Фоновый фрейм для команды 1 (Красные)
         team1_frame = QFrame()
@@ -48,71 +52,89 @@ class Ui_MainWindow(object):
                 background: qradialgradient(cx:0.5, cy:0.5, radius:1, fx:0.5, fy:0.5, 
                     stop:0 rgba(255, 0, 0, 0.8), 
                     stop:1 rgba(0, 0, 0, 0.5));
-                border-radius: 15px;
-                padding: 10px;
-                border: none; /* Убираем рамку */
+                border-radius: 15px;  # Закругление углов
+                padding: 10px;  # Отступы внутри фрейма
+                border: none;  # Убираем рамку
             }
             """
         )
-        team1_frame.setFixedSize(400, 150)
-        central_layout.addWidget(team1_frame, alignment=Qt.AlignLeft)
+        team1_frame.setFixedSize(400, 150)  # Устанавливаем фиксированный размер фрейма
+        central_layout.addWidget(
+            team1_frame, alignment=Qt.AlignLeft
+        )  # Добавляем фрейм в layout с выравниванием влево
 
         # Создаем вертикальный layout для команды 1
         team1_layout = QVBoxLayout(team1_frame)
         team1_layout.setContentsMargins(0, 0, 0, 0)  # Убираем отступы
 
+        # Метка для названия команды 1
         self.team1_label = QLabel("Красные", self.central_widget)
         self.team1_label.setFont(
-            QFont("Bebas Neue", 40, QFont.Bold)
-        )  # Спортивный шрифт
-        self.team1_label.setStyleSheet(
-            "color: rgba(255, 255, 255, 0.8); background: transparent;"
+            QFont("Bebas Neue", 40, QFont.Bold)  # Устанавливаем шрифт
         )
-        self.team1_label.setAlignment(Qt.AlignCenter)
+        self.team1_label.setStyleSheet(
+            "color: rgba(255, 255, 255, 0.8); background: transparent;"  # Устанавливаем цвет текста
+        )
+        self.team1_label.setAlignment(Qt.AlignCenter)  # Центрируем текст
 
         # Эффект тени для текста команды
         team_shadow_effect = QGraphicsDropShadowEffect()
-        team_shadow_effect.setBlurRadius(15)
-        team_shadow_effect.setColor(QtGui.QColor(0, 0, 0, 160))
-        team_shadow_effect.setOffset(5, 5)
-        self.team1_label.setGraphicsEffect(team_shadow_effect)
+        team_shadow_effect.setBlurRadius(15)  # Устанавливаем радиус размытия
+        team_shadow_effect.setColor(
+            QtGui.QColor(0, 0, 0, 160)
+        )  # Устанавливаем цвет тени
+        team_shadow_effect.setOffset(5, 5)  # Устанавливаем смещение тени
+        self.team1_label.setGraphicsEffect(
+            team_shadow_effect
+        )  # Применяем эффект к метке
 
-        team1_layout.addWidget(self.team1_label)
+        team1_layout.addWidget(self.team1_label)  # Добавляем метку в layout
 
         # Таймер (по центру)
         self.timer_frame = QFrame()
         self.timer_frame.setStyleSheet(
             """
             QFrame {
-                background-color: rgba(0, 0, 0, 0.7);
-                border-radius: 20px;
-                padding: 30px;
-                border: none; /* Убираем рамку */
+                background-color: rgba(0, 0, 0, 0.7);  # Полупрозрачный фон
+                border-radius: 20px;  # Закругление углов
+                padding: 30px;  # Отступы внутри фрейма
+                border: none;  # Убираем рамку
             }
             """
         )
-        self.timer_frame.setFixedSize(630, 340)
-        central_layout.addWidget(self.timer_frame, alignment=Qt.AlignCenter)
+        self.timer_frame.setFixedSize(
+            630, 340
+        )  # Устанавливаем фиксированный размер фрейма
+        central_layout.addWidget(
+            self.timer_frame, alignment=Qt.AlignCenter
+        )  # Добавляем фрейм в layout с выравниванием по центру
 
-        timer_frame_layout = QVBoxLayout(self.timer_frame)
+        timer_frame_layout = QVBoxLayout(
+            self.timer_frame
+        )  # Вертикальный layout для таймера
 
+        # Метка для отображения времени
         self.time_label = QLabel(self.central_widget)
-        self.time_label.setFont(QFont("Bebas Neue", 120))  # Спортивный шрифт
-        self.time_label.setAlignment(Qt.AlignCenter)
+        self.time_label.setFont(QFont("Bebas Neue", 120))  # Устанавливаем шрифт
+        self.time_label.setAlignment(Qt.AlignCenter)  # Центрируем текст
         self.time_label.setStyleSheet(
-            "color: rgba(255, 255, 255, 0.8); background: transparent;"
+            "color: rgba(255, 255, 255, 0.8); background: transparent;"  # Устанавливаем цвет текста
         )
-        self.time_label.setFixedSize(550, 250)
-        self.time_label.setWordWrap(True)
+        self.time_label.setFixedSize(
+            550, 250
+        )  # Устанавливаем фиксированный размер метки
+        self.time_label.setWordWrap(True)  # Включаем перенос слов
 
         # Эффект тени для таймера
         shadow_effect = QGraphicsDropShadowEffect()
-        shadow_effect.setBlurRadius(30)
-        shadow_effect.setColor(QtGui.QColor(0, 0, 0, 200))
-        shadow_effect.setOffset(6, 6)
-        self.time_label.setGraphicsEffect(shadow_effect)
+        shadow_effect.setBlurRadius(30)  # Устанавливаем радиус размытия
+        shadow_effect.setColor(QtGui.QColor(0, 0, 0, 200))  # Устанавливаем цвет тени
+        shadow_effect.setOffset(6, 6)  # Устанавливаем смещение тени
+        self.time_label.setGraphicsEffect(shadow_effect)  # Применяем эффект к метке
 
-        timer_frame_layout.addWidget(self.time_label)
+        timer_frame_layout.addWidget(
+            self.time_label
+        )  # Добавляем метку в layout таймера
 
         # Фоновый фрейм для команды 2 (Синие)
         team2_frame = QFrame()
@@ -122,56 +144,56 @@ class Ui_MainWindow(object):
                 background: qradialgradient(cx:0.5, cy:0.5, radius:1, fx:0.5, fy:0.5, 
                     stop:0 rgba(0, 0, 255, 0.8), 
                     stop:1 rgba(0, 0, 0, 0.5));
-                border-radius: 15px;
-                padding: 10px;
-                border: none; /* Убираем рамку */
+                border-radius: 15px;  # Закругление углов
+                padding: 10px;  # Отступы внутри фрейма
+                border: none;  # Убираем рамку
             }
             """
         )
-        team2_frame.setFixedSize(400, 150)
-        central_layout.addWidget(team2_frame, alignment=Qt.AlignRight)
+        team2_frame.setFixedSize(400, 150)  # Устанавливаем фиксированный размер фрейма
+        central_layout.addWidget(
+            team2_frame, alignment=Qt.AlignRight
+        )  # Добавляем фрейм в layout с выравниванием вправо
 
         # Создаем вертикальный layout для команды 2
         team2_layout = QVBoxLayout(team2_frame)
         team2_layout.setContentsMargins(0, 0, 0, 0)  # Убираем отступы
 
+        # Метка для названия команды 2
         self.team2_label = QLabel("Синие", self.central_widget)
         self.team2_label.setFont(
-            QFont("Bebas Neue", 40, QFont.Bold)
-        )  # Спортивный шрифт
-        self.team2_label.setStyleSheet(
-            "color: rgba(255, 255, 255, 0.8); background: transparent;"
+            QFont("Bebas Neue", 40, QFont.Bold)  # Устанавливаем шрифт
         )
-        self.team2_label.setAlignment(Qt.AlignCenter)
+        self.team2_label.setStyleSheet(
+            "color: rgba(255, 255, 255, 0.8); background: transparent;"  # Устанавливаем цвет текста
+        )
+        self.team2_label.setAlignment(Qt.AlignCenter)  # Центрируем текст
 
         # Эффект тени для текста команды
         team_shadow_effect = QGraphicsDropShadowEffect()
-        team_shadow_effect.setBlurRadius(15)
-        team_shadow_effect.setColor(QtGui.QColor(0, 0, 0, 160))
-        team_shadow_effect.setOffset(5, 5)
-        self.team2_label.setGraphicsEffect(team_shadow_effect)
+        team_shadow_effect.setBlurRadius(15)  # Устанавливаем радиус размытия
+        team_shadow_effect.setColor(
+            QtGui.QColor(0, 0, 0, 160)
+        )  # Устанавливаем цвет тени
+        team_shadow_effect.setOffset(5, 5)  # Устанавливаем смещение тени
+        self.team2_label.setGraphicsEffect(
+            team_shadow_effect
+        )  # Применяем эффект к метке
 
-        team2_layout.addWidget(self.team2_label)
+        team2_layout.addWidget(self.team2_label)  # Добавляем метку в layout
 
         # Добавляем горизонтальный макет на основной
         main_layout.addLayout(central_layout)
 
         # Таймер
         self.timer = QTimer()
-        self.timer.setInterval(1000)
-        self.timer.timeout.connect(self.update_timer)
-
-        # Анимация изменения цвета
-        self.color_animation = QPropertyAnimation(self.time_label, b"styleSheet")
-        self.color_animation.setDuration(3000)  # Время анимации 3 секунды
-        self.color_animation.setLoopCount(-1)  # Бесконечная анимация
-        self.color_animation.setStartValue(
-            "color: rgba(255, 255, 255, 0.8); background: transparent;"
-        )
-        self.color_animation.setEndValue(
-            "color: rgba(255, 165, 0, 0.8); background: transparent;"
-        )
+        self.timer.setInterval(1000)  # Устанавливаем интервал таймера (1 секунда)
+        self.timer.timeout.connect(
+            self.update_timer
+        )  # Подключаем событие обновления таймера
 
     def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Arena"))
+        _translate = QtCore.QCoreApplication.translate  # Утилита для перевода текста
+        MainWindow.setWindowTitle(
+            _translate("MainWindow", "Arena")
+        )  # Устанавливаем заголовок окна
