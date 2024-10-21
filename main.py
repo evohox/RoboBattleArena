@@ -1,7 +1,45 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QVBoxLayout, QLineEdit, QPushButton, QFormLayout, QSpinBox
 from PyQt5.QtCore import Qt
 from design import Ui_MainWindow
+
+class SettingsDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.setWindowTitle("Настройки")
+        self.setFixedSize(300, 200)
+
+        layout = QVBoxLayout(self)
+
+        form_layout = QFormLayout()
+        self.team1_edit = QLineEdit(self)
+        self.team1_edit.setText(parent.team1_label.text())
+        self.team2_edit = QLineEdit(self)
+        self.team2_edit.setText(parent.team2_label.text())
+
+        # Отдельные спинбоксы для минут и секунд
+        self.minutes_edit = QSpinBox(self)
+        self.minutes_edit.setRange(0, 59)  # Диапазон минут от 0 до 59
+        self.minutes_edit.setValue(parent.initial_time // 60)  # Устанавливаем текущие минуты
+
+        self.seconds_edit = QSpinBox(self)
+        self.seconds_edit.setRange(0, 59)  # Диапазон секунд от 0 до 59
+        self.seconds_edit.setValue(parent.initial_time % 60)  # Устанавливаем текущие секунды
+
+        form_layout.addRow("Команда 1:", self.team1_edit)
+        form_layout.addRow("Команда 2:", self.team2_edit)
+        form_layout.addRow("Минуты:", self.minutes_edit)
+        form_layout.addRow("Секунды:", self.seconds_edit)
+
+        layout.addLayout(form_layout)
+
+        self.save_button = QPushButton("Сохранить", self)
+        self.save_button.clicked.connect(self.save_settings)
+        layout.addWidget(self.save_button)
+
+    def save_settings(self):
+        self.accept()  # Закрыть диалоговое окно и вернуть результат
 
 
 class Window(QMainWindow, Ui_MainWindow):
@@ -25,6 +63,22 @@ class Window(QMainWindow, Ui_MainWindow):
             self.reset_timer()  # Сбрасываем таймер
         elif event.key() == Qt.Key_Escape:
             QApplication.quit()  # Выход из приложения
+        elif event.key() == Qt.Key_S:
+            self.open_settings_dialog()  # Открываем окно настроек
+
+
+    def open_settings_dialog(self):
+        """Открываем диалог настроек."""
+        dialog = SettingsDialog(self)
+        if dialog.exec_() == QDialog.Accepted:
+            # Обновляем названия команд
+            self.team1_label.setText(dialog.team1_edit.text())
+            self.team2_label.setText(dialog.team2_edit.text())
+
+            # Обновляем время в секундах (минуты * 60 + секунды)
+            self.initial_time = dialog.minutes_edit.value() * 60 + dialog.seconds_edit.value()
+            self.reset_timer()  # Сбрасываем таймер после изменения времени
+
 
     def toggle_timer(self):
         """Запускаем или ставим на паузу таймер в зависимости от состояния."""
@@ -59,8 +113,7 @@ class Window(QMainWindow, Ui_MainWindow):
         """Обновляем оставшееся время каждую секунду."""
         if self.time_left <= 1:
             self.timer.stop()  # Останавливаем таймер, если время вышло
-            self.state = "Pause"  # Меняем состояние на "Пауза"
-            self.time_label.setText("Время вышло!")  # Отображаем сообщение
+            self.state = "End"  # Меняем состояние на "Пауза"
 
         if self.otschet > 0:
             self.otschet -= 1  # Уменьшаем отсчет на 1
@@ -85,7 +138,11 @@ class Window(QMainWindow, Ui_MainWindow):
                     f"{minutes:02d}:{seconds:02d}"
                 )  # Форматирование времени
         elif self.state == "Pause":
-            self.time_label.setText("Пауза")  # Показать состояние "Пауза"
+            self.time_label.setText("||")  # Показать состояние "Пауза"
+        elif self.state == "End":
+            self.time_label.setText("Стоп!")  # Отображаем сообщение
+        else:
+            raise Exception("Error with state")
 
 
 def application():

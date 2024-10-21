@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import (
     QVBoxLayout,
     QHBoxLayout,
@@ -40,8 +40,8 @@ class Ui_MainWindow(object):
         team1_frame.setStyleSheet(
             """
             QFrame {
-                background: qradialgradient(cx:0.5, cy:0.5, radius:1, fx:0.5, fy:0.5, 
-                    stop:0 rgba(255, 0, 0, 0.8), 
+                background: qradialgradient(cx:0.5, cy:0.5, radius:1, fx:0.5, fy:0.5,
+                    stop:0 rgba(255, 0, 0, 0.8),
                     stop:1 rgba(0, 0, 0, 0.5));
                 border-radius: 15px;  /* Закругление углов */
                 padding: 10px;  /* Отступы внутри фрейма */
@@ -124,8 +124,8 @@ class Ui_MainWindow(object):
         team2_frame.setStyleSheet(
             """
             QFrame {
-                background: qradialgradient(cx:0.5, cy:0.5, radius:1, fx:0.5, fy:0.5, 
-                    stop:0 rgba(0, 0, 255, 0.8), 
+                background: qradialgradient(cx:0.5, cy:0.5, radius:1, fx:0.5, fy:0.5,
+                    stop:0 rgba(0, 0, 255, 0.8),
                     stop:1 rgba(0, 0, 0, 0.5));
                 border-radius: 15px;  /* Закругление углов */
                 padding: 10px;  /* Отступы внутри фрейма */
