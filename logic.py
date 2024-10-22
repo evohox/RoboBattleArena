@@ -105,7 +105,6 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.update_time_label()  # Обновляем метку времени
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
-                self.status = "Конец"
                 self.state = "End"  # Меняем состояние на "End"
                 self.update_time_label()  # Обновляем метку времени
         else:
