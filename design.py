@@ -30,7 +30,7 @@ class Ui_MainWindow(object):
         main_layout.setContentsMargins(0, 0, 0, 0)
 
         # Запрашиваем количество команд и их названия
-        self.team_names = self.get_team_names()
+        self.team_names, self.preparation_time = self.get_team_names_and_time()
 
         # Проверяем количество команд и создаем соответствующий layout
         if len(self.team_names) == 1:
@@ -158,7 +158,7 @@ class Ui_MainWindow(object):
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.update_timer)
 
-    def get_team_names(self):
+    def get_team_names_and_time(self):
         team_count, ok = QInputDialog.getInt(
             None, "Количество команд", "Введите количество команд (1 или 2):", 2, 1, 2
         )
@@ -176,9 +176,20 @@ class Ui_MainWindow(object):
                 else:
                     team_names.append(f"Команда {i + 1}")  # Название по умолчанию
 
-            return team_names
+            # Запрашиваем время подготовки
+            time_options = ["3 минуты", "7 минут"]
+            time_index, ok = QInputDialog.getItem(
+                None, "Время подготовки", "Выберите время подготовки:", time_options
+            )
+            preparation_time = 3 if time_index == "3 минуты" else 7
 
-        return ["Красные", "Синие"]  # Названия по умолчанию, если ввод отменен
+            return team_names, preparation_time
+
+        return ["Красные", "Синие"], 3  # Названия по умолчанию, если ввод отменен
+
+    def set_preparation_time(self, minutes):
+        self.preparation_time = minutes
+        self.time_label.setText(f"Подготовка: {minutes} минут")
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

@@ -15,12 +15,18 @@ class Window(QMainWindow, Ui_MainWindow):
         self.setupUi(self)  # Настраиваем интерфейс
 
         # Инициализация переменных
-        self.initial_time = 3 * 60  # 3 минут в секундах
+        self.initial_time = self.set_preparation_time(self.preparation_time)
         self.time_left = self.initial_time  # Оставшееся время
         self.state = "Idle"  # Начальное состояние таймера
         self.status = "Подготовка"
 
+        # Устанавливаем время подготовки
+        self.set_preparation_time(self.preparation_time)
+
         self.update_time_label()  # Обновляем метку времени
+
+    def set_preparation_time(self, minutes):
+        return minutes * 60
 
     def keyPressEvent(self, event):
         """Обрабатываем нажатия клавиш."""
