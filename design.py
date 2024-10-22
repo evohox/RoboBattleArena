@@ -87,25 +87,33 @@ class Ui_MainWindow(object):
                 padding: 30px;  /* Отступы внутри фрейма */
                 border: none;  /* Убираем рамку */
             }
-        """
+            """
         )
-        self.timer_frame.setFixedSize(630, 340)  # Устанавливаем фиксированный размер
+        self.timer_frame.setMinimumSize(
+            630, 400
+        )  # Увеличиваем минимальный размер фрейма
+        self.timer_frame.setMaximumSize(
+            800, 600
+        )  # Задаем максимальный размер (опционально)
         central_layout.addWidget(
             self.timer_frame, alignment=Qt.AlignCenter
         )  # Добавляем таймер
 
-        timer_frame_layout = QVBoxLayout(
-            self.timer_frame
-        )  # Вертикальный layout для таймера
+        # Вертикальный layout для таймера
+        timer_frame_layout = QVBoxLayout(self.timer_frame)
 
         # Метка для отображения времени
         self.time_label = QLabel(self.central_widget)
-        self.time_label.setFont(QFont("Bebas Neue", 120))  # Устанавливаем шрифт
-        self.time_label.setAlignment(Qt.AlignCenter)  # Центрируем текст
+        self.time_label.setFont(
+            QFont("Bebas Neue", 120)
+        )  # Оставляем тот же размер шрифта
+        self.time_label.setAlignment(Qt.AlignCenter)  # Центрируем текст по обеим осям
+        self.time_label.setMinimumSize(
+            550, 0
+        )  # Устанавливаем минимальный размер по ширине и динамическую высоту
         self.time_label.setStyleSheet(
             "color: rgba(255, 255, 255, 0.8); background: transparent;"
         )
-        self.time_label.setFixedSize(550, 250)  # Устанавливаем фиксированный размер
         self.time_label.setWordWrap(True)  # Включаем перенос слов
 
         # Эффект тени для таймера
