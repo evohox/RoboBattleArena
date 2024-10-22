@@ -70,15 +70,14 @@ class Window(QMainWindow, Ui_MainWindow):
 
     def start_timer(self):
         """Запускаем таймер."""
-        if self.time_left <= 0:
-            return
+        # if self.time_left <= 0:
+        #     return
         self.state = "Ongoing"  # Меняем состояние на "Идет"
         self.timer.start()  # Запускаем таймер
         self.update_time_label()  # Обновляем метку времени
 
     def pause_timer(self):
         """Ставим таймер на паузу."""
-        # if self.state == "Ongoing" or "Idle":
         self.state = "Pause"  # Меняем состояние на "Пауза"
         self.timer.stop()  # Останавливаем таймер
         self.update_time_label()  # Обновляем метку времени
@@ -110,9 +109,9 @@ class Window(QMainWindow, Ui_MainWindow):
     def update_time_label(self):
         """Обновляем текст метки времени в зависимости от состояния."""
         if self.state == "Idle":
-            self.time_label.setFont(QFont("Bebas Neue", 140))
+            self.time_label.setFont(QFont("Bebas Neue", 90))
             # Центрирование текста по горизонтали и вертикали
-            self.time_label.setText('<div style="color:white; ">Arena</div>')
+            self.time_label.setText(f'<div style="color:white; ">{self.status}</div>')
 
         elif self.state == "Ongoing":
             if self.time_left > self.initial_time:
@@ -134,13 +133,18 @@ class Window(QMainWindow, Ui_MainWindow):
                     )
 
         elif self.state == "Pause":
-            self.time_label.setFont(QFont("Bebas Neue", 145))
-            minutes = self.time_left // 60
-            seconds = self.time_left % 60
-            # Центрирование текста по горизонтали и вертикали
-            self.time_label.setText(
-                f'<div style="color:blue; ">{minutes:02d}:{seconds:02d}</div>'
-            )
+            if self.time_left > self.initial_time:
+                self.time_label.setFont(QFont("Bebas Neue", 125))
+                # Центрирование текста по горизонтали и вертикали
+                self.time_label.setText('<div style="color:white; ">Старт!</div>')
+            else:
+                self.time_label.setFont(QFont("Bebas Neue", 145))
+                minutes = self.time_left // 60
+                seconds = self.time_left % 60
+                # Центрирование текста по горизонтали и вертикали
+                self.time_label.setText(
+                    f'<div style="color:blue; ">{minutes:02d}:{seconds:02d}</div>'
+                )
 
         elif self.state == "End":
             self.time_label.setFont(QFont("Bebas Neue", 145))
