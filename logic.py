@@ -7,12 +7,24 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from design import Ui_MainWindow
 from settings import SettingsDialog
+import time
+import RPi.GPIO as GPIO
+from rpi_ws281x import PixelStrip, Color
+from playsound import playsound
+from RpyGPIO import GPIOHandler
 
 
 class Window(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()  # Инициализируем родительский класс
         self.setupUi(self)  # Настраиваем интерфейс
+
+        # Инициализация GPIOHandler
+        self.gpio_handler = GPIOHandler()
+
+        # Подключаем сигналы к слотам
+        self.gpio_handler.fight_started.connect(self.start_timer)
+        self.gpio_handler.fight_stopped.connect(self.pause_timer)
 
         # Инициализация переменных
         self.initial_time = self.set_preparation_time(self.preparation_time)
@@ -158,3 +170,8 @@ class Window(QMainWindow, Ui_MainWindow):
 
         else:
             raise Exception("Error with state")
+
+    def closeEvent(self, event):
+        """Очистка при закрытии окна"""
+        self.gpio_handler.cleanup()
+        super().closeEvent(event)
