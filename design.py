@@ -95,14 +95,17 @@ class Ui_MainWindow(object):
         palette = self.timer_frame.palette()
         palette.setColor(self.timer_frame.backgroundRole(), Qt.black)
         self.timer_frame.setPalette(palette)
+        self.timer_frame.setMinimumSize(650, 400)
+        self.timer_frame.setMaximumSize(900, 500)
+        central_layout.addWidget(self.timer_frame, alignment=Qt.AlignCenter)
 
         # Тень для таймера
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(50)
-        shadow.setXOffset(0)
-        shadow.setYOffset(0)
-        shadow.setColor(QtGui.QColor(0, 0, 0, 150))
-        self.timer_frame.setGraphicsEffect(shadow)
+        # shadow = QGraphicsDropShadowEffect()
+        # shadow.setBlurRadius(50)
+        # shadow.setXOffset(0)
+        # shadow.setYOffset(0)
+        # shadow.setColor(QtGui.QColor(0, 0, 0, 150))
+        # self.timer_frame.setGraphicsEffect(shadow)
 
         # Layout для таймера
         timer_frame_layout = QVBoxLayout(self.timer_frame)
