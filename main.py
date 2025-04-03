@@ -12,7 +12,7 @@ class AsyncQtIntegration:
         self.loop = asyncio.new_event_loop()
         self.timer = QTimer()
         self.timer.timeout.connect(self.process_events)
-        self.timer.start(10)  # 10ms интервал
+        self.timer.start(1)  # 1ms интервал
 
     def process_events(self):
         # Обрабатываем asyncio события в Qt таймере

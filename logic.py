@@ -3,13 +3,11 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QDialog,
 )
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from design import Ui_MainWindow
 from settings import SettingsDialog
-import time
 import asyncio
-import RPi.GPIO as GPIO
 from RpyGPIO import GPIOHandler
 
 
@@ -17,6 +15,9 @@ class Window(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()  # Инициализируем родительский класс
         self.setupUi(self)  # Настраиваем интерфейс
+
+        # Инициализация GPIOHandler
+        self.gpio_handler = GPIOHandler()
 
         # Инициализация переменных
         self.initial_time = self.set_preparation_time(self.preparation_time)
@@ -40,13 +41,13 @@ class Window(QMainWindow, Ui_MainWindow):
     def keyPressEvent(self, event):
         """Обрабатываем нажатия клавиш."""
         if event.key() == Qt.Key_Space:
-            self.toggle_timer()  # Переключаем состояние таймера
+            self.toggle_timer()
         elif event.key() in (Qt.Key_R, Qt.Key_K):
-            self.reset_timer()  # Сбрасываем таймер
+            self.reset_timer()
         elif event.key() == Qt.Key_Escape:
-            QApplication.quit()  # Выход из приложения
+            self.close()  # Корректное закрытие окна
         elif event.key() == Qt.Key_S:
-            self.open_settings_dialog()  # Открываем окно настроек
+            self.open_settings_dialog()
         elif event.key() == Qt.Key_Left:
             if self.time_left + 5 >= self.initial_time:
                 self.time_left = self.initial_time
@@ -168,6 +169,20 @@ class Window(QMainWindow, Ui_MainWindow):
         else:
             raise Exception("Error with state")
 
-    def closeEvent(self, event):
+    def close(self, event):
         """Корректное завершение при закрытии окна"""
+        # Отключаем светодиоды
+        asyncio.run_coroutine_threadsafe(
+            self.gpio_handler.set_color(Color(0, 0, 0)),
+            asyncio.get_event_loop()
+        )
+
+        # Останавливаем GPIO
+        asyncio.run_coroutine_threadsafe(
+            self.gpio_handler.stop(),
+            asyncio.get_event_loop()
+        )
+
+        # Закрываем приложение
+        QApplication.quit()
         super().closeEvent(event)
