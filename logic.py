@@ -180,18 +180,9 @@ class Window(QMainWindow, Ui_MainWindow):
         else:
             raise Exception("Error with state")
 
-    async def cleanup(self):
-        """Корректная очистка ресурсов"""
-        await self.gpio_handler.stop()  # Останавливаем GPIO
-
-    def close(self, event):
+    async def close(self, event):
         """Корректное завершение при закрытии окна"""
-        # Запускаем очистку в асинхронном режиме
-        asyncio.run_coroutine_threadsafe(
-            self.cleanup(),
-            asyncio.get_event_loop()
-        )
-
+        await self.gpio_handler.stop()
         event.accept()  # Подтверждаем закрытие
         super().closeEvent(event)
         QApplication.quit()
