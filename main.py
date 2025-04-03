@@ -6,8 +6,9 @@ from logic import Window
 from RpyGPIO import GPIOHandler
 
 class AsyncQtIntegration:
-    def __init__(self, gpio_handler):
+    def __init__(self, gpio_handler, window):
         self.gpio_handler = gpio_handler
+        self.window = window
         self.loop = asyncio.new_event_loop()
         self.timer = QTimer()
         self.timer.timeout.connect(self.process_events)
@@ -19,7 +20,11 @@ class AsyncQtIntegration:
         self.loop.run_forever()
 
     async def start(self):
-        await self.gpio_handler.start()
+        # Запускаем обработчик GPIO и окно параллельно
+        await asyncio.gather(
+            self.gpio_handler.run_loop(),
+            self.window.run_loop()
+        )
 
 def application():
     app = QApplication(sys.argv)
@@ -31,7 +36,7 @@ def application():
     gpio_handler.fight_stopped.connect(window.pause_timer)
 
     # Инициализация интеграции
-    async_integration = AsyncQtIntegration(gpio_handler)
+    async_integration = AsyncQtIntegration(gpio_handler, window)
     asyncio.run_coroutine_threadsafe(async_integration.start(), async_integration.loop)
 
     window.show()

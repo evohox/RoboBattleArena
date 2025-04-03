@@ -29,6 +29,11 @@ class Window(QMainWindow, Ui_MainWindow):
 
         self.update_time_label()  # Обновляем метку времени
 
+    async def run_loop(self):
+        """Асинхронный цикл для интеграции с asyncio."""
+        while True:
+            await asyncio.sleep(0.1)  # Небольшая задержка, чтобы не нагружать CPU
+
     def set_preparation_time(self, minutes):
         return minutes * 60
 
@@ -165,5 +170,4 @@ class Window(QMainWindow, Ui_MainWindow):
 
     def closeEvent(self, event):
         """Корректное завершение при закрытии окна"""
-        self.gpio_handler.stop()  # Остановить обработчик GPIO
         super().closeEvent(event)
