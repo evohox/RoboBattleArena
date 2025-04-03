@@ -41,6 +41,12 @@ class GPIOHandler(QObject):
         self._running = False
         self._task = None
 
+        self.buttons = [
+            self.TEAM1_READY, self.TEAM1_STOP,
+            self.TEAM2_READY, self.TEAM2_STOP,
+            self.REFEREE_START, self.REFEREE_STOP
+        ]
+
     def _setup_hardware(self):
         """Инициализация оборудования"""
         # Настройка светодиодной ленты
@@ -52,12 +58,8 @@ class GPIOHandler(QObject):
 
         # Настройка GPIO
         GPIO.setmode(GPIO.BCM)
-        buttons = [
-            self.TEAM1_READY, self.TEAM1_STOP,
-            self.TEAM2_READY, self.TEAM2_STOP,
-            self.REFEREE_START, self.REFEREE_STOP
-        ]
-        for button in buttons:
+
+        for button in self.buttons:
             GPIO.setup(button, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
     # async def start(self):
