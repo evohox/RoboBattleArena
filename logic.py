@@ -3,11 +3,12 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QDialog,
 )
-from PyQt5.QtCore import Qt, QThread
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QFont
 from design import Ui_MainWindow
 from settings import SettingsDialog
 import time
+import asyncio
 import RPi.GPIO as GPIO
 from rpi_ws281x import PixelStrip, Color
 from RpyGPIO import GPIOHandler
@@ -18,17 +19,15 @@ class Window(QMainWindow, Ui_MainWindow):
         super().__init__()  # Инициализируем родительский класс
         self.setupUi(self)  # Настраиваем интерфейс
 
-        # Инициализация GPIOHandler
+        # Инициализация GPIO
         self.gpio_handler = GPIOHandler()
+        self.gpio_timer = QTimer()
+        self.gpio_timer.timeout.connect(self.check_gpio)
+        self.gpio_timer.start(100)  # Проверка GPIO каждые 100мс
 
-        # Подключаем сигналы к слотам
-        self.gpio_handler.fight_started.connect(self.start_timer)
-        self.gpio_handler.fight_stopped.connect(self.pause_timer)
-        self.gpio_thread = QThread()
-        self.gpio_handler.moveToThread(self.gpio_thread)
-        self.gpio_thread.started.connect(self.gpio_handler.start)
-        self.gpio_thread.start()
-
+        # Подключение сигналов
+        self.gpio_handler.fight_started.connect(self.on_gpio_start)
+        self.gpio_handler.fight_stopped.connect(self.on_gpio_stop)
         # Инициализация переменных
         self.initial_time = self.set_preparation_time(self.preparation_time)
         self.time_left = self.initial_time  # Оставшееся время
@@ -68,17 +67,29 @@ class Window(QMainWindow, Ui_MainWindow):
             self.pause_timer()
             self.update_time_label()
 
+    def check_gpio(self):
+        """Синхронная проверка состояния кнопок"""
+        for button in [
+            self.gpio_handler.TEAM1_READY,
+            self.gpio_handler.TEAM1_STOP,
+            self.gpio_handler.TEAM2_READY,
+            self.gpio_handler.TEAM2_STOP,
+            self.gpio_handler.REFEREE_START,
+            self.gpio_handler.REFEREE_STOP
+        ]:
+            if GPIO.input(button) == GPIO.HIGH:
+                asyncio.create_task(self.gpio_handler.handle_button_press(button))
+                time.sleep(0.1)  # Антидребезг
+
     def on_gpio_start(self):
         """Обработка старта от рефери"""
         if self.state == "Idle" or self.state == "Pause":
             self.start_timer()
-            playsound('/home/admin/project/buttons/start.mp3', block=False)
 
     def on_gpio_stop(self):
         """Обработка остановки (любая кнопка неготовности)"""
         if self.state == "Ongoing":
             self.pause_timer()
-            playsound('/home/admin/project/buttons/stop.mp3', block=False)
 
     def open_settings_dialog(self):
         """Открываем диалог настроек."""
