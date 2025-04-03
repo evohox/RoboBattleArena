@@ -174,7 +174,5 @@ class Window(QMainWindow, Ui_MainWindow):
 
     def closeEvent(self, event):
         """Корректное завершение при закрытии окна"""
-        self.gpio_handler.stop()
-        self.gpio_thread.quit()
-        self.gpio_thread.wait()
+        self.gpio_handler.stop()  # Остановить обработчик GPIO
         super().closeEvent(event)
