@@ -46,7 +46,11 @@ class Window(QMainWindow, Ui_MainWindow):
         elif event.key() in (Qt.Key_R, Qt.Key_K):
             self.reset_timer()
         elif event.key() == Qt.Key_Escape:
-            self.handle_escape()  # Корректное закрытие окна
+            close_event = QCloseEvent()
+            self.close(close_event)
+            # Если событие не было принято, принудительно закрываем
+            if not close_event.isAccepted():
+                QApplication.quit()
         elif event.key() == Qt.Key_S:
             self.open_settings_dialog()
         elif event.key() == Qt.Key_Left:
@@ -64,15 +68,6 @@ class Window(QMainWindow, Ui_MainWindow):
             self.pause_timer()
             self.update_time_label()
 
-    def handle_escape(self):
-        """Обработка нажатия Escape с корректным завершением"""
-        # Создаем фейковое событие закрытия
-        close_event = QCloseEvent()
-        self.closeEvent(close_event)
-
-        # Если событие не было принято, принудительно закрываем
-        if not close_event.isAccepted():
-            QApplication.quit()
 
     def open_settings_dialog(self):
         """Открываем диалог настроек."""
@@ -184,5 +179,5 @@ class Window(QMainWindow, Ui_MainWindow):
         """Корректное завершение при закрытии окна"""
         await self.gpio_handler.stop()
         event.accept()  # Подтверждаем закрытие
-        super().closeEvent(event)
+        super().close(event)
         QApplication.quit()
