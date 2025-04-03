@@ -32,7 +32,7 @@ def application():
 
     # Инициализация интеграции
     async_integration = AsyncQtIntegration(gpio_handler)
-    asyncio.run_coroutine_threadsafe(async_integration.run_loop(), async_integration.loop)
+    asyncio.run_coroutine_threadsafe(async_integration.start(), async_integration.loop)
 
     window.show()
     sys.exit(app.exec_())
