@@ -83,7 +83,7 @@ class Ui_MainWindow(object):
         self.timer_frame.setStyleSheet(
             """
             QFrame {
-                background-color: rgba(0, 0, 0, 0.7);
+                background-color: rgba(0, 0, 0);
                 border-radius: 20px;
                 padding: 30px;
                 border: none;
@@ -91,7 +91,7 @@ class Ui_MainWindow(object):
             """
         )
         self.timer_frame.setMinimumSize(650, 400)
-        self.timer_frame.setMaximumSize(800, 500)
+        self.timer_frame.setMaximumSize(900, 500)
         central_layout.addWidget(self.timer_frame, alignment=Qt.AlignCenter)
 
         # Тень для таймера
