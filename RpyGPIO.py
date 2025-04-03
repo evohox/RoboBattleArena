@@ -60,14 +60,14 @@ class GPIOHandler(QObject):
         for button in buttons:
             GPIO.setup(button, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-    async def start(self):
-        """Запуск основного цикла обработки"""
-        if self._running:
-            return
+    # async def start(self):
+    #     """Запуск основного цикла обработки"""
+    #     if self._running:
+    #         return
 
-        self._running = True
-        await self.set_color(Color(0, 0, 255))  # Начальный синий цвет
-        self._task = asyncio.create_task(self._run_loop())
+    #     self._running = True
+    #     await self.set_color(Color(0, 0, 255))  # Начальный синий цвет
+    #     self._task = asyncio.create_task(self._run_loop())
 
     async def stop(self):
         """Остановка обработки"""
@@ -77,23 +77,26 @@ class GPIOHandler(QObject):
         await self.set_color(Color(0, 0, 0))  # Выключить светодиоды
         GPIO.cleanup()
 
-    async def _run_loop(self):
+    async def start(self):
         """Основной цикл обработки кнопок"""
         try:
-            while self._running:
-                for button in [
-                    self.TEAM1_READY, self.TEAM1_STOP,
-                    self.TEAM2_READY, self.TEAM2_STOP,
-                    self.REFEREE_START, self.REFEREE_STOP
-                ]:
+        # Инициализация - синий цвет
+            await self.set_color(Color(0, 0, 255))
+
+            while True:
+                # Проверка всех кнопок
+                for button in self.buttons:
                     if GPIO.input(button) == GPIO.HIGH:
                         await self._handle_button_press(button)
-                        await asyncio.sleep(0.1)  # Антидребезг
+                        await asyncio.sleep(0.1)  # Задержка для антидребезга
+                        print(self.current_state, self.team1_ready, self.team2_ready, button)
 
                 await asyncio.sleep(0.05)
-        except Exception as e:
-            print(f"Ошибка в цикле обработки: {e}")
-            await self.stop()
+
+        except KeyboardInterrupt:
+            await self.set_color(Color(0, 0, 0))  # Выключить все светодиоды
+            GPIO.cleanup()
+            print("Программа завершена.")
 
     async def _handle_button_press(self, button):
         """Обработка нажатия кнопки"""

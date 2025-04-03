@@ -5,7 +5,7 @@ from logic import Window
 from RpyGPIO import GPIOHandler
 
 
-def application():
+async def application():
     """Запускаем приложение."""
     app = QApplication(sys.argv)
 
