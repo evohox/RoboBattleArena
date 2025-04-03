@@ -38,7 +38,6 @@ class Ui_MainWindow(object):
 
         # Прозрачный виджет для UI
         self.ui_widget = QWidget(self.central_widget)
-        self.ui_widget.setStyleSheet("background-color: transparent;")
         self.ui_widget.setAttribute(Qt.WA_TranslucentBackground)
         self.main_layout.addWidget(self.ui_widget)
 
@@ -84,8 +83,10 @@ class Ui_MainWindow(object):
         self.timer_frame.setStyleSheet(
             """
             QFrame {
-                background-color: rgb(80, 80, 80);  /* Чистый серый цвет */
+                background-color: rgba(0, 0, 0, 0.7);
                 border-radius: 20px;
+                padding: 30px;
+                border: none;
             }
             """
         )
@@ -106,7 +107,7 @@ class Ui_MainWindow(object):
         self.time_label = QLabel("00:00")
         self.time_label.setFont(QFont("Bebas Neue", 120))
         self.time_label.setAlignment(Qt.AlignCenter)
-        self.time_label.setStyleSheet("color: white; background: transparent;")
+        self.time_label.setStyleSheet("color: rgba(255, 255, 255, 0.8); background: transparent;")
         timer_frame_layout.addWidget(self.time_label)
 
         # Фрейм для команды 2 (Синие)
