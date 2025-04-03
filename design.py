@@ -95,12 +95,12 @@ class Ui_MainWindow(object):
         central_layout.addWidget(self.timer_frame, alignment=Qt.AlignCenter)
 
         # Тень для таймера
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(50)
-        shadow.setXOffset(0)
-        shadow.setYOffset(0)
-        shadow.setColor(QtGui.QColor(0, 0, 0, 150))
-        self.timer_frame.setGraphicsEffect(shadow)
+        # shadow = QGraphicsDropShadowEffect()
+        # shadow.setBlurRadius(50)
+        # shadow.setXOffset(0)
+        # shadow.setYOffset(0)
+        # shadow.setColor(QtGui.QColor(0, 0, 0, 150))
+        # self.timer_frame.setGraphicsEffect(shadow)
 
         # Layout для таймера
         timer_frame_layout = QVBoxLayout(self.timer_frame)
@@ -158,10 +158,6 @@ class Ui_MainWindow(object):
             return team_names, preparation_time
 
         return ["Красные", "Синие"], 3
-
-    def update_timer(self):
-        """Обновляет отображение таймера (логика таймера может быть добавлена здесь)"""
-        self.time_label.setText("00:00")
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
