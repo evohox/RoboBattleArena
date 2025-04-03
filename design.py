@@ -80,23 +80,28 @@ class Ui_MainWindow(object):
 
         # Фрейм для таймера (серый фон)
         # Фрейм для таймера (серый фон)
-        self.timer_frame = QFrame(self.ui_widget)
-        self.timer_frame.setStyleSheet(
-            """
+        self.timer_frame = QFrame()
+        self.timer_frame.setStyleSheet("""
             QFrame {
                 background-color: black;
                 border-radius: 20px;
                 padding: 30px;
                 border: none;
             }
-            """
-        )
-        self.timer_frame.setAutoFillBackground(True)  # Это ключевая строка
+        """)
+        self.timer_frame.setMinimumSize(650, 400)
+        self.timer_frame.setMaximumSize(900, 500)
+
+        # Ключевые настройки для непрозрачности
+        self.timer_frame.setAttribute(Qt.WA_NoSystemBackground, True)
+        self.timer_frame.setAttribute(Qt.WA_OpaquePaintEvent, True)
+        self.timer_frame.setAutoFillBackground(True)
+
+        # Устанавливаем палитру
         palette = self.timer_frame.palette()
         palette.setColor(self.timer_frame.backgroundRole(), Qt.black)
         self.timer_frame.setPalette(palette)
-        self.timer_frame.setMinimumSize(650, 400)
-        self.timer_frame.setMaximumSize(900, 500)
+
         central_layout.addWidget(self.timer_frame, alignment=Qt.AlignCenter)
 
         # Тень для таймера
