@@ -32,4 +32,4 @@ async def application():
 
 
 if __name__ == "__main__":
-    application()  # Запускаем приложение
+    asyncio.run(application())  # Запускаем приложение
