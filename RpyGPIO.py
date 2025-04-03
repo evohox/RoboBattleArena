@@ -1,32 +1,33 @@
-import time
+import asyncio
 import RPi.GPIO as GPIO
-from rpi_ws281x import PixelStrip, Color
-from playsound import playsound
 from PyQt5.QtCore import QObject, pyqtSignal
-# import pyglet
-# sound = pyglet.media.load("//home//admin//project//buttons//start.mp3")
-# sound.play()
+from rpi_ws281x import PixelStrip, Color
 
 
 class GPIOHandler(QObject):
-    fight_started = pyqtSignal()  # Сигнал без параметров
+    # Сигналы для внешних событий
+    fight_started = pyqtSignal()
     fight_stopped = pyqtSignal()
+
+    # Настройки по умолчанию
+    LED_COUNT = 180
+    LED_PIN = 18
+    LED_FREQ_HZ = 800000
+    LED_DMA = 10
+    LED_BRIGHTNESS = 255
+    LED_INVERT = False
+    LED_CHANNEL = 0
+
+    # Состояния системы
+    STATE_WAITING = 0
+    STATE_READY = 1
+    STATE_FIGHT = 2
+
     def __init__(self):
         super().__init__()
-        # Настройки светодиодной ленты
-        self.LED_COUNT = 180
-        self.LED_PIN = 18
-        self.LED_FREQ_HZ = 800000
-        self.LED_DMA = 10
-        self.LED_BRIGHTNESS = 255
-        self.LED_INVERT = False
-        self.LED_CHANNEL = 0
-
-        # Состояния системы
-        self.STATE_WAITING = 0
-        self.STATE_READY = 1
-        self.STATE_FIGHT = 2
         self.current_state = self.STATE_WAITING
+        self.team1_ready = False
+        self.team2_ready = False
 
         # Настройка пинов для кнопок
         self.TEAM1_READY = 6
@@ -36,33 +37,96 @@ class GPIOHandler(QObject):
         self.REFEREE_START = 19
         self.REFEREE_STOP = 26
 
-        # Флаги готовности команд
-        self.team1_ready = False
-        self.team2_ready = False
+        self._setup_hardware()
+        self._running = False
+        self._task = None
 
-
-    def setup_lef_strip(self):
-        # Инициализация светодиодной ленты
-        self.strip = PixelStrip(self.LED_COUNT, self.LED_PIN, self.LED_FREQ_HZ, self.LED_DMA, self.LED_INVERT, self.LED_BRIGHTNESS, self.LED_CHANNEL)
+    def _setup_hardware(self):
+        """Инициализация оборудования"""
+        # Настройка светодиодной ленты
+        self.strip = PixelStrip(
+            self.LED_COUNT, self.LED_PIN, self.LED_FREQ_HZ,
+            self.LED_DMA, self.LED_INVERT, self.LED_BRIGHTNESS, self.LED_CHANNEL
+        )
         self.strip.begin()
 
-
-    def setup_GPIO(self):
         # Настройка GPIO
         GPIO.setmode(GPIO.BCM)
-        buttons = [self.TEAM1_READY, self.TEAM1_STOP, self.TEAM2_READY, self.TEAM2_STOP, self.REFEREE_START, self.REFEREE_STOP]
+        buttons = [
+            self.TEAM1_READY, self.TEAM1_STOP,
+            self.TEAM2_READY, self.TEAM2_STOP,
+            self.REFEREE_START, self.REFEREE_STOP
+        ]
         for button in buttons:
             GPIO.setup(button, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-    def set_color(self, color, duration=0):
+    async def start(self):
+        """Запуск основного цикла обработки"""
+        if self._running:
+            return
+
+        self._running = True
+        await self.set_color(Color(0, 0, 255))  # Начальный синий цвет
+        self._task = asyncio.create_task(self._run_loop())
+
+    async def stop(self):
+        """Остановка обработки"""
+        self._running = False
+        if self._task:
+            await self._task
+        await self.set_color(Color(0, 0, 0))  # Выключить светодиоды
+        GPIO.cleanup()
+
+    async def _run_loop(self):
+        """Основной цикл обработки кнопок"""
+        try:
+            while self._running:
+                for button in [
+                    self.TEAM1_READY, self.TEAM1_STOP,
+                    self.TEAM2_READY, self.TEAM2_STOP,
+                    self.REFEREE_START, self.REFEREE_STOP
+                ]:
+                    if GPIO.input(button) == GPIO.HIGH:
+                        await self._handle_button_press(button)
+                        await asyncio.sleep(0.1)  # Антидребезг
+
+                await asyncio.sleep(0.05)
+        except Exception as e:
+            print(f"Ошибка в цикле обработки: {e}")
+            await self.stop()
+
+    async def _handle_button_press(self, button):
+        """Обработка нажатия кнопки"""
+        if button == self.TEAM1_READY and self.current_state == self.STATE_WAITING:
+            self.team1_ready = True
+            await self.blink(Color(0, 255, 0), 2)  # Зеленый
+            if self.team2_ready:
+                self.current_state = self.STATE_READY
+
+        elif button == self.TEAM2_READY and self.current_state == self.STATE_WAITING:
+            self.team2_ready = True
+            await self.blink(Color(0, 255, 0), 2)  # Зеленый
+            if self.team1_ready:
+                self.current_state = self.STATE_READY
+
+        elif button == self.REFEREE_START and self.current_state == self.STATE_READY:
+            self.current_state = self.STATE_FIGHT
+            await self.fade_to_color(Color(255, 0, 0), 2)  # Красный
+            self.fight_started.emit()
+
+        elif (button in [self.TEAM1_STOP, self.TEAM2_STOP, self.REFEREE_STOP]) and self.current_state != self.STATE_WAITING:
+            await self.reset_to_waiting()
+            self.fight_stopped.emit()
+
+    async def set_color(self, color, duration=0):
         """Установка цвета всей ленты"""
         for i in range(self.strip.numPixels()):
             self.strip.setPixelColor(i, color)
         self.strip.show()
         if duration > 0:
-            time.sleep(duration)
+            await asyncio.sleep(duration)
 
-    def fade_to_color(self, target_color, duration=1.0):
+    async def fade_to_color(self, target_color, duration=1.0):
         """Плавный переход к указанному цвету"""
         steps = 100
         delay = duration / steps
@@ -84,42 +148,17 @@ class GPIOHandler(QObject):
             for i in range(self.strip.numPixels()):
                 self.strip.setPixelColor(i, Color(r, g, b))
             self.strip.show()
-            time.sleep(delay)
+            await asyncio.sleep(delay)
 
-    def reset_to_waiting(self):
+    async def blink(self, target_color, duration=2.0):
+        """Мигание цветом"""
+        current_color = self.strip.getPixelColor(0)
+        await self.fade_to_color(target_color, duration/2)
+        await self.fade_to_color(current_color, duration/2)
+
+    async def reset_to_waiting(self):
         """Сброс в состояние ожидания"""
         self.current_state = self.STATE_WAITING
         self.team1_ready = False
         self.team2_ready = False
-        self.fade_to_color(Color(0, 0, 255))  # Синий
-        self.fight_stopped.emit()
-
-    def handle_button_press(self, button):
-        """Обработка нажатия кнопок"""
-
-        if button == self.TEAM1_READY and self.current_state == self.STATE_WAITING:
-            team1_ready = True
-            self.set_color(Color(0, 255, 0), 0)  # Зеленый на 2 секунды
-            if self.team2_ready:
-                self.current_state = self.STATE_READY
-
-        elif button == self.TEAM2_READY and self.current_state == self.STATE_WAITING:
-            self.team2_ready = True
-            self.set_color(Color(0, 255, 0), 0)  # Зеленый на 2 секунды
-            if self.team1_ready:
-                self.current_state = self.STATE_READY
-
-        elif button == self.REFEREE_START and self.current_state == self.STATE_READY:
-            self.current_state = self.STATE_FIGHT
-            playsound('//home//admin//project//buttons//start.mp3', block=False)
-            self.fade_to_color(Color(255, 0, 0))  # Красный
-            self.fight_started.emit()
-
-        elif (button in [self.TEAM1_STOP, self.TEAM2_STOP, self.REFEREE_STOP]) and self.current_state != self.STATE_WAITING:
-            self.reset_to_waiting()
-            playsound('//home//admin//project//buttons//stop.mp3', block=False)
-            self.fight_stopped.emit()
-
-    def cleanup(self):
-        self.set_color(Color(0, 0, 0))
-        GPIO.cleanup()
+        await self.fade_to_color(Color(0, 0, 255))  # Синий

@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QDialog,
 )
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QThread
 from PyQt5.QtGui import QFont
 from design import Ui_MainWindow
 from settings import SettingsDialog
@@ -25,6 +25,10 @@ class Window(QMainWindow, Ui_MainWindow):
         # Подключаем сигналы к слотам
         self.gpio_handler.fight_started.connect(self.start_timer)
         self.gpio_handler.fight_stopped.connect(self.pause_timer)
+        self.gpio_thread = QThread()
+        self.gpio_handler.moveToThread(self.gpio_thread)
+        self.gpio_thread.started.connect(self.gpio_handler.start)
+        self.gpio_thread.start()
 
         # Инициализация переменных
         self.initial_time = self.set_preparation_time(self.preparation_time)
@@ -64,6 +68,18 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.time_left -= 5
             self.pause_timer()
             self.update_time_label()
+
+    def on_gpio_start(self):
+        """Обработка старта от рефери"""
+        if self.state == "Idle" or self.state == "Pause":
+            self.start_timer()
+            playsound('/home/admin/project/buttons/start.mp3', block=False)
+
+    def on_gpio_stop(self):
+        """Обработка остановки (любая кнопка неготовности)"""
+        if self.state == "Ongoing":
+            self.pause_timer()
+            playsound('/home/admin/project/buttons/stop.mp3', block=False)
 
     def open_settings_dialog(self):
         """Открываем диалог настроек."""
@@ -172,6 +188,8 @@ class Window(QMainWindow, Ui_MainWindow):
             raise Exception("Error with state")
 
     def closeEvent(self, event):
-        """Очистка при закрытии окна"""
-        self.gpio_handler.cleanup()
+        """Корректное завершение при закрытии окна"""
+        self.gpio_handler.stop()
+        self.gpio_thread.quit()
+        self.gpio_thread.wait()
         super().closeEvent(event)

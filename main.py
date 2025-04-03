@@ -1,15 +1,32 @@
 import sys
+import asyncio
 from PyQt5.QtWidgets import QApplication
 from logic import Window
+from qasync import QEventLoop, asyncSlot
 
 
 def application():
-    """Запускаем приложение."""
+    """Запускаем приложение с интеграцией asyncio."""
     app = QApplication(sys.argv)
-    window = Window()  # Создаем объект окна
-    window.show()  # Показываем окно
-    sys.exit(app.exec_())  # Запускаем главный цикл приложения
+
+    # Настраиваем asyncio-интеграцию
+    loop = QEventLoop(app)
+    asyncio.set_event_loop(loop)
+
+    window = Window()
+    window.show()
+
+    with loop:
+        try:
+            loop.run_forever()
+        finally:
+            loop.close()
 
 
 if __name__ == "__main__":
-    application()  # Запускаем приложение
+    # Для корректного завершения приложения
+    try:
+        application()
+    except KeyboardInterrupt:
+        print("Приложение завершено")
+        sys.exit(0)
