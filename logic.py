@@ -32,7 +32,7 @@ class Window(QMainWindow, Ui_MainWindow):
     async def run_loop(self):
         """Асинхронный цикл для интеграции с asyncio."""
         while True:
-            await asyncio.sleep(0.1)  # Небольшая задержка, чтобы не нагружать CPU
+            await asyncio.sleep(0.03)  # Небольшая задержка, чтобы не нагружать CPU
 
     def set_preparation_time(self, minutes):
         return minutes * 60
