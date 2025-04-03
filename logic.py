@@ -10,7 +10,6 @@ from settings import SettingsDialog
 import time
 import asyncio
 import RPi.GPIO as GPIO
-from rpi_ws281x import PixelStrip, Color
 from RpyGPIO import GPIOHandler
 
 
@@ -18,14 +17,6 @@ class Window(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()  # Инициализируем родительский класс
         self.setupUi(self)  # Настраиваем интерфейс
-
-        # Инициализация GPIO
-        self.gpio_handler = GPIOHandler()
-        self.gpio_timer = QTimer()
-
-        # Подключение сигналов
-        self.gpio_handler.fight_started.connect(self.start_timer)
-        self.gpio_handler.fight_stopped.connect(self.pause_timer)
 
         # Инициализация переменных
         self.initial_time = self.set_preparation_time(self.preparation_time)
