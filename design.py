@@ -78,23 +78,31 @@ class Ui_MainWindow(object):
         self.team1_label.setAlignment(Qt.AlignCenter)
         team1_layout.addWidget(self.team1_label)
 
-        # Таймер
+        # Фрейм для таймера (серый фон)
         self.timer_frame = QFrame(self.ui_widget)
         self.timer_frame.setStyleSheet(
             """
             QFrame {
-                background-color: rgba(0, 0, 0, 0.7);
+                background-color: rgba(50, 50, 50, 0.8);
                 border-radius: 20px;
-                padding: 30px;
-                border: none;
             }
             """
         )
-        self.timer_frame.setMinimumSize(630, 400)
+        self.timer_frame.setMinimumSize(650, 400)
+        self.timer_frame.setMaximumSize(800, 500)
         central_layout.addWidget(self.timer_frame, alignment=Qt.AlignCenter)
 
+        # Тень для таймера
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(50)
+        shadow.setXOffset(0)
+        shadow.setYOffset(0)
+        shadow.setColor(QtGui.QColor(0, 0, 0, 150))
+        self.timer_frame.setGraphicsEffect(shadow)
+
+        # Layout для таймера
         timer_frame_layout = QVBoxLayout(self.timer_frame)
-        self.time_label = QLabel()
+        self.time_label = QLabel("00:00")
         self.time_label.setFont(QFont("Bebas Neue", 120))
         self.time_label.setAlignment(Qt.AlignCenter)
         self.time_label.setStyleSheet("color: white; background: transparent;")
