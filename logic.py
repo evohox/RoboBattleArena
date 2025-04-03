@@ -39,18 +39,14 @@ class Window(QMainWindow, Ui_MainWindow):
     def set_preparation_time(self, minutes):
         return minutes * 60
 
-    async def keyPressEvent(self, event):
+    def keyPressEvent(self, event):
         """Обрабатываем нажатия клавиш."""
         if event.key() == Qt.Key_Space:
             self.toggle_timer()
         elif event.key() in (Qt.Key_R, Qt.Key_K):
             self.reset_timer()
         elif event.key() == Qt.Key_Escape:
-            await self.gpio_handler.stop()
-            QApplication.quit()
-            # Если событие не было принято, принудительно закрываем
-            if not event.isAccepted():
-                QApplication.quit()
+            asyncio.create_task(self.cleanup_and_exit())
         elif event.key() == Qt.Key_S:
             self.open_settings_dialog()
         elif event.key() == Qt.Key_Left:
@@ -68,6 +64,10 @@ class Window(QMainWindow, Ui_MainWindow):
             self.pause_timer()
             self.update_time_label()
 
+    async def cleanup_and_exit(self):
+        """Корректное завершение программы"""
+        await self.gpio_handler.stop()
+        QApplication.quit()
 
     def open_settings_dialog(self):
         """Открываем диалог настроек."""
