@@ -168,6 +168,8 @@ class GPIOHandler(QObject):
         await self.fade_to_color(Color(0, 0, 255))  # Синий
 
     async def stop(self):
+        print("Stoping")
+        await self.set_color(Color(0, 0, 0))
         self._running = False
         if self._task:
             self._task.cancel()
@@ -175,5 +177,4 @@ class GPIOHandler(QObject):
                 await self._task
             except asyncio.CancelledError:
                 pass
-        await self.set_color(Color(0, 0, 0))
         GPIO.cleanup()
