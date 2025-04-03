@@ -7,7 +7,7 @@ from RpyGPIO import GPIOHandler
 
 async def run_gpio(gpio_handler):
     """Асинхронная задача для работы GPIO"""
-    await gpio_handler.start()
+    await gpio_handler.run_loop()
 
 
 def application():
