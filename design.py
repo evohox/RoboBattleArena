@@ -83,8 +83,10 @@ class Ui_MainWindow(object):
         self.timer_frame.setStyleSheet(
             """
             QFrame {
-                background-color: rgba(50, 50, 50, 0.8);
+                background-color: rgba(0, 0, 0, 0.7);
                 border-radius: 20px;
+                padding: 30px;
+                border: none;
             }
             """
         )
