@@ -5,6 +5,11 @@ from logic import Window
 from RpyGPIO import GPIOHandler
 
 
+async def run_gpio(gpio_handler):
+    """Асинхронная задача для работы GPIO"""
+    await gpio_handler.start()
+
+
 def application():
     """Запускаем приложение."""
     app = QApplication(sys.argv)
@@ -17,19 +22,27 @@ def application():
     gpio_handler.fight_started.connect(window.start_timer)
     gpio_handler.fight_stopped.connect(window.pause_timer)
 
+    # Создаем и настраиваем event loop
+    loop = asyncio.get_event_loop()
+
+    # Создаем задачу для GPIO
+    gpio_task = loop.create_task(run_gpio(gpio_handler))
+
     # Показываем окно
     window.show()
 
-    # Запускаем асинхронный цикл для GPIOHandler
-    async def run_gpio():
-        await gpio_handler.start()
-
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(run_gpio())
-
     # Запускаем главный цикл приложения
-    sys.exit(app.exec_())
+    exit_code = app.exec_()
+
+    # Останавливаем GPIO при завершении
+    gpio_task.cancel()
+    try:
+        loop.run_until_complete(gpio_task)
+    except asyncio.CancelledError:
+        pass
+
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":
-    application()  # Запускаем приложение
+    application()

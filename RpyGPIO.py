@@ -59,13 +59,13 @@ class GPIOHandler(QObject):
         self._running = False
         self._task = None
 
-    # async def start(self):
-    #     """Запуск основного цикла обработки"""
-    #     if self._running:
-    #         return
+    async def start(self):
+        """Запуск основного цикла обработки"""
+        if self._running:
+            return
 
-    #     self._running = True
-    #     self._task = asyncio.create_task(self._run_loop())
+        self._running = True
+        self._task = asyncio.create_task(self._run_loop())
 
     async def stop(self):
         """Остановка обработки"""
@@ -75,7 +75,7 @@ class GPIOHandler(QObject):
         await self.set_color(Color(0, 0, 0))  # Выключить светодиоды
         GPIO.cleanup()
 
-    async def start(self):
+    async def _running(self):
         """Основной цикл обработки кнопок"""
         try:
         # Инициализация - синий цвет
