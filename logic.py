@@ -163,7 +163,7 @@ class Window(QMainWindow, Ui_MainWindow):
         else:
             raise Exception("Error with state")
 
-    def closeEvent(self, event):
-        """Корректное завершение при закрытии окна"""
-        self.gpio_handler.stop()  # Остановить обработчик GPIO
-        super().closeEvent(event)
+    async def closeEvent(self, event):
+        """Обработчик закрытия окна"""
+        await self.gpio_handler.stop()
+        event.accept()

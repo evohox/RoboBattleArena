@@ -167,11 +167,14 @@ class GPIOHandler(QObject):
         self.team2_ready = False
         await self.fade_to_color(Color(0, 0, 255))  # Синий
 
-    def stop(self):
-        """Синхронная остановка обработчика"""
+    async def stop(self):
+        """Остановка обработчика"""
         self._running = False
         if self._task:
             self._task.cancel()
-        self.strip.setPixelColor(0, Color(0, 0, 0))  # Выключить светодиоды
-        self.strip.show()
+            try:
+                await self._task
+            except asyncio.CancelledError:
+                pass
+        await self.set_color(Color(0, 0, 0))
         GPIO.cleanup()
