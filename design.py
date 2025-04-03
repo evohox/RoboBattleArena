@@ -82,7 +82,7 @@ class Ui_MainWindow(object):
         team1_layout.setContentsMargins(0, 0, 0, 0)
 
         # Метка для названия команды 1
-        self.team1_label = QLabel(self.team_names[0], self.central_widget)
+        self.team1_label = QLabel(self.team_names[0])
         self.team1_label.setFont(QFont("Bebas Neue", 40, QFont.Bold))
         self.team1_label.setStyleSheet(
             "color: rgba(255, 255, 255, 0.8); background: transparent;"
@@ -114,7 +114,7 @@ class Ui_MainWindow(object):
         central_layout.addWidget(self.timer_frame, alignment=Qt.AlignCenter)
 
         timer_frame_layout = QVBoxLayout(self.timer_frame)
-        self.time_label = QLabel(self.central_widget)
+        self.time_label = QLabel()
         self.time_label.setFont(QFont("Bebas Neue", 120))
         self.time_label.setAlignment(Qt.AlignCenter)
         self.time_label.setMinimumSize(550, 0)
@@ -153,7 +153,7 @@ class Ui_MainWindow(object):
             team2_layout.setContentsMargins(0, 0, 0, 0)
 
             # Метка для названия команды 2
-            self.team2_label = QLabel(self.team_names[1], self.central_widget)
+            self.team2_label = QLabel(self.team_names[1])
             self.team2_label.setFont(QFont("Bebas Neue", 40, QFont.Bold))
             self.team2_label.setStyleSheet(
                 "color: rgba(255, 255, 255, 0.8); background: transparent;"
@@ -171,9 +171,18 @@ class Ui_MainWindow(object):
         # Добавляем центральный layout на основной
         self.main_layout.addLayout(central_layout)
 
+        # Устанавливаем обработчик изменения размера
+        self.central_widget.resizeEvent = self.resizeEvent
+
         self.timer = QTimer()
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.update_timer)
+
+    def resizeEvent(self, event):
+        """Обработчик изменения размера окна"""
+        # Обновляем размер фона
+        self.background_label.setFixedSize(event.size())
+        event.accept()
 
     def get_team_names_and_time(self):
         team_count, ok = QInputDialog.getInt(
