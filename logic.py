@@ -78,7 +78,7 @@ class Window(QMainWindow, Ui_MainWindow):
             self.gpio_handler.REFEREE_STOP
         ]:
             if GPIO.input(button) == GPIO.HIGH:
-                asyncio.create_task(self.gpio_handler.handle_button_press(button))
+                asyncio.create_task(self.gpio_handler._handle_button_press(button))
                 time.sleep(0.1)  # Антидребезг
 
     def on_gpio_start(self):
