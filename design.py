@@ -21,13 +21,15 @@ class Ui_MainWindow(object):
         self.central_widget = QWidget(MainWindow)
         MainWindow.setCentralWidget(self.central_widget)
 
+        main_layout = QVBoxLayout(self.central_widget)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+
         self.background_label = QLabel(self.central_widget)
         self.background_label.setPixmap(QPixmap("background.jpg"))
         self.background_label.setScaledContents(True)
         self.background_label.setGeometry(0, 0, MainWindow.width(), MainWindow.height())
 
-        main_layout = QVBoxLayout(self.central_widget)
-        main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.addWidget(self.background_widget)
 
         # Запрашиваем количество команд и их названия
         self.team_names, self.preparation_time = self.get_team_names_and_time()
