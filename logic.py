@@ -10,7 +10,6 @@ from settings import SettingsDialog
 import time
 import RPi.GPIO as GPIO
 from rpi_ws281x import PixelStrip, Color
-from playsound import playsound
 from RpyGPIO import GPIOHandler
 
 
