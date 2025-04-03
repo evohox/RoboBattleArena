@@ -168,7 +168,6 @@ class GPIOHandler(QObject):
         await self.fade_to_color(Color(0, 0, 255))  # Синий
 
     async def stop(self):
-        """Остановка обработчика"""
         self._running = False
         if self._task:
             self._task.cancel()

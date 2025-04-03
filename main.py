@@ -1,63 +1,41 @@
 import sys
 import asyncio
 from PyQt5.QtWidgets import QApplication
-from qasync import QEventLoop, asyncSlot  # Необходимо установить: pip install qasync
+from PyQt5.QtCore import QTimer
 from logic import Window
 from RpyGPIO import GPIOHandler
 
+class AsyncQtIntegration:
+    def __init__(self, gpio_handler):
+        self.gpio_handler = gpio_handler
+        self.loop = asyncio.new_event_loop()
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.process_events)
+        self.timer.start(10)  # 10ms интервал
 
-class Application:
-    def __init__(self):
-        self.app = QApplication(sys.argv)
-        self.window = Window()
-        self.gpio_handler = GPIOHandler()
+    def process_events(self):
+        # Обрабатываем asyncio события в Qt таймере
+        self.loop.call_soon(self.loop.stop)
+        self.loop.run_forever()
 
-        # Подключаем сигналы
-        self.gpio_handler.fight_started.connect(self.window.start_timer)
-        self.gpio_handler.fight_stopped.connect(self.window.pause_timer)
+    async def start(self):
+        await self.gpio_handler.start()
 
-        # Настраиваем обработчик закрытия окна
-        self.window.closeEvent = self.on_close
+def application():
+    app = QApplication(sys.argv)
+    window = Window()
+    gpio_handler = GPIOHandler()
 
-    async def run_gpio(self):
-        """Запуск GPIO обработчика"""
-        try:
-            await self.gpio_handler.run_loop()
-        except asyncio.CancelledError:
-            await self.gpio_handler.stop()
+    # Подключение сигналов
+    gpio_handler.fight_started.connect(window.start_timer)
+    gpio_handler.fight_stopped.connect(window.pause_timer)
 
-    @asyncSlot()
-    async def on_close(self, event):
-        """Обработчик закрытия окна"""
-        await self.gpio_handler.stop()
-        event.accept()
+    # Инициализация интеграции
+    async_integration = AsyncQtIntegration(gpio_handler)
+    asyncio.run_coroutine_threadsafe(async_integration.run_loop(), async_integration.loop)
 
-    def run(self):
-        """Запуск приложения"""
-        self.window.show()
-
-        # Создаем и запускаем задачу для GPIO
-        loop = asyncio.get_event_loop()
-        gpio_task = loop.create_task(self.run_gpio())
-
-        # Запускаем Qt-приложение
-        exit_code = self.app.exec_()
-
-        # Останавливаем задачи при завершении
-        gpio_task.cancel()
-        loop.run_until_complete(gpio_task)
-
-        sys.exit(exit_code)
-
+    window.show()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
-    # Настраиваем интеграцию asyncio с Qt
-    app = QApplication(sys.argv)
-    loop = QEventLoop(app)
-    asyncio.set_event_loop(loop)
-
-    # Запускаем наше приложение
-    main_app = Application()
-
-    with loop:
-        loop.run_until_complete(main_app.run())
+    application()
