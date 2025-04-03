@@ -91,7 +91,7 @@ class Ui_MainWindow(object):
             """
         )
         self.timer_frame.setMinimumSize(650, 400)
-        self.timer_frame.setMaximumSize(800, 500)
+        self.timer_frame.setMaximumSize(900, 500)
         central_layout.addWidget(self.timer_frame, alignment=Qt.AlignCenter)
 
         # Тень для таймера
@@ -107,7 +107,8 @@ class Ui_MainWindow(object):
         self.time_label = QLabel("00:00")
         self.time_label.setFont(QFont("Bebas Neue", 120))
         self.time_label.setAlignment(Qt.AlignCenter)
-        self.time_label.setStyleSheet("color: white; background: transparent;")
+        self.time_label.setWordWrap(True)
+        self.time_label.setStyleSheet("color: rgba(255, 255, 255, 0.8); background: transparent;")
         timer_frame_layout.addWidget(self.time_label)
 
         # Фрейм для команды 2 (Синие)
