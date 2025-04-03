@@ -26,7 +26,7 @@ class AsyncQtIntegration:
             self.window.run_loop()
         )
 
-async def application():
+def application():
     app = QApplication(sys.argv)
     window = Window()
     gpio_handler = GPIOHandler()
@@ -40,7 +40,7 @@ async def application():
     asyncio.run_coroutine_threadsafe(async_integration.start(), async_integration.loop)
 
     window.show()
-    await sys.exit(app.exec_())
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
-    asyncio.run(application())
+    application()
