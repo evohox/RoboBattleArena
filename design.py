@@ -83,7 +83,7 @@ class Ui_MainWindow(object):
         self.timer_frame.setStyleSheet(
             """
             QFrame {
-                background-color: rgba(0, 0, 0);
+                background-color: rgba(0, 0, 0, 1);
                 border-radius: 20px;
                 padding: 30px;
                 border: none;
@@ -107,7 +107,7 @@ class Ui_MainWindow(object):
         self.time_label = QLabel("00:00")
         self.time_label.setFont(QFont("Bebas Neue", 120))
         self.time_label.setAlignment(Qt.AlignCenter)
-        self.time_label.setStyleSheet("color: rgba(255, 255, 255); background: transparent;")
+        self.time_label.setStyleSheet("color: rgba(255, 255, 255, 1); background: transparent;")
         timer_frame_layout.addWidget(self.time_label)
 
         # Фрейм для команды 2 (Синие)
