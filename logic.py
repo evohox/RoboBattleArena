@@ -22,12 +22,11 @@ class Window(QMainWindow, Ui_MainWindow):
         # Инициализация GPIO
         self.gpio_handler = GPIOHandler()
         self.gpio_timer = QTimer()
-        self.gpio_timer.timeout.connect(self.check_gpio)
-        self.gpio_timer.start(100)  # Проверка GPIO каждые 100мс
 
         # Подключение сигналов
-        self.gpio_handler.fight_started.connect(self.on_gpio_start)
-        self.gpio_handler.fight_stopped.connect(self.on_gpio_stop)
+        self.gpio_handler.fight_started.connect(self.start_timer)
+        self.gpio_handler.fight_stopped.connect(self.pause_timer)
+
         # Инициализация переменных
         self.initial_time = self.set_preparation_time(self.preparation_time)
         self.time_left = self.initial_time  # Оставшееся время
@@ -66,30 +65,6 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.time_left -= 5
             self.pause_timer()
             self.update_time_label()
-
-    def check_gpio(self):
-        """Синхронная проверка состояния кнопок"""
-        for button in [
-            self.gpio_handler.TEAM1_READY,
-            self.gpio_handler.TEAM1_STOP,
-            self.gpio_handler.TEAM2_READY,
-            self.gpio_handler.TEAM2_STOP,
-            self.gpio_handler.REFEREE_START,
-            self.gpio_handler.REFEREE_STOP
-        ]:
-            if GPIO.input(button) == GPIO.HIGH:
-                asyncio.create_task(self.gpio_handler._handle_button_press(button))
-                time.sleep(0.1)  # Антидребезг
-
-    def on_gpio_start(self):
-        """Обработка старта от рефери"""
-        if self.state == "Idle" or self.state == "Pause":
-            self.start_timer()
-
-    def on_gpio_stop(self):
-        """Обработка остановки (любая кнопка неготовности)"""
-        if self.state == "Ongoing":
-            self.pause_timer()
 
     def open_settings_dialog(self):
         """Открываем диалог настроек."""
