@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import (
     QFrame,
     QGraphicsDropShadowEffect,
     QInputDialog,
+    QStackedLayout,
 )
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import QTimer, Qt
@@ -18,18 +19,32 @@ class Ui_MainWindow(object):
         MainWindow.setWindowFlags(Qt.FramelessWindowHint)
         MainWindow.showFullScreen()
 
+        # Создаем главный виджет с StackedLayout
         self.central_widget = QWidget(MainWindow)
         MainWindow.setCentralWidget(self.central_widget)
 
-        main_layout = QVBoxLayout(self.central_widget)
-        main_layout.setContentsMargins(0, 0, 0, 0)
+        # StackedLayout позволит нам наложить элементы поверх фона
+        self.stacked_layout = QStackedLayout(self.central_widget)
+        self.stacked_layout.setStackingMode(QStackedLayout.StackAll)
 
-        self.background_label = QLabel(self.central_widget)
+        # 1. Слой с фоном
+        self.background_widget = QWidget()
+        self.background_widget.setLayout(QVBoxLayout())
+        self.background_widget.layout().setContentsMargins(0, 0, 0, 0)
+
+        self.background_label = QLabel(self.background_widget)
         self.background_label.setPixmap(QPixmap("background.jpg"))
         self.background_label.setScaledContents(True)
-        self.background_label.setGeometry(0, 0, MainWindow.width(), MainWindow.height())
+        self.background_widget.layout().addWidget(self.background_label)
 
-        # main_layout.addWidget(self.background_label)
+        # 2. Слой с основным интерфейсом
+        self.main_widget = QWidget()
+        self.main_layout = QVBoxLayout(self.main_widget)
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
+
+        # Добавляем оба слоя в stacked layout
+        self.stacked_layout.addWidget(self.background_widget)
+        self.stacked_layout.addWidget(self.main_widget)
 
         # Запрашиваем количество команд и их названия
         self.team_names, self.preparation_time = self.get_team_names_and_time()
@@ -154,7 +169,7 @@ class Ui_MainWindow(object):
             team2_layout.addWidget(self.team2_label)
 
         # Добавляем центральный layout на основной
-        main_layout.addLayout(central_layout)
+        self.main_layout.addLayout(central_layout)
 
         self.timer = QTimer()
         self.timer.setInterval(1000)
