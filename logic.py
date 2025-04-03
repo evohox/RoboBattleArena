@@ -2,9 +2,10 @@ from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
     QDialog,
+
 )
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QCloseEvent
 from design import Ui_MainWindow
 from settings import SettingsDialog
 import asyncio
@@ -66,7 +67,7 @@ class Window(QMainWindow, Ui_MainWindow):
     def handle_escape(self):
         """Обработка нажатия Escape с корректным завершением"""
         # Создаем фейковое событие закрытия
-        close_event = QtGui.QCloseEvent()
+        close_event = QCloseEvent()
         self.closeEvent(close_event)
 
         # Если событие не было принято, принудительно закрываем
