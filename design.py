@@ -29,7 +29,7 @@ class Ui_MainWindow(object):
         self.background_label.setScaledContents(True)
         self.background_label.setGeometry(0, 0, MainWindow.width(), MainWindow.height())
 
-        main_layout.addWidget(self.background_widget)
+        main_layout.addWidget(self.background_label)
 
         # Запрашиваем количество команд и их названия
         self.team_names, self.preparation_time = self.get_team_names_and_time()
