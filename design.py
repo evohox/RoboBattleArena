@@ -178,11 +178,11 @@ class Ui_MainWindow(object):
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.update_timer)
 
-    def resizeEvent(self, event):
-        """Обработчик изменения размера окна"""
-        # Обновляем размер фона
-        self.background_label.setFixedSize(event.size())
-        event.accept()
+    # def resizeEvent(self, event):
+    #     """Обработчик изменения размера окна"""
+    #     # Обновляем размер фона
+    #     self.background_label.setFixedSize(event.size())
+    #     event.accept()
 
     def get_team_names_and_time(self):
         team_count, ok = QInputDialog.getInt(
