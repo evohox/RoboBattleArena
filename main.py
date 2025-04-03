@@ -5,48 +5,42 @@ from PyQt5.QtCore import QTimer
 from logic import Window
 from RpyGPIO import GPIOHandler
 
-class AsyncQtEventLoop:
-    def __init__(self):
+class AsyncQtIntegration:
+    def __init__(self, gpio_handler, window):
+        self.gpio_handler = gpio_handler
+        self.window = window
         self.loop = asyncio.new_event_loop()
         self.timer = QTimer()
         self.timer.timeout.connect(self.process_events)
-        self.timer.start(10)  # 10ms интервал
+        self.timer.start(1)
 
     def process_events(self):
-        """Обработка asyncio событий в Qt-таймере"""
+        # Обрабатываем asyncio события в Qt таймере
         self.loop.call_soon(self.loop.stop)
         self.loop.run_forever()
 
-    async def run_tasks(self, *coros):
-        """Запуск асинхронных задач"""
-        tasks = [asyncio.create_task(coro) for coro in coros]
-        await asyncio.gather(*tasks)
+    async def start(self):
+        # Запускаем обработчик GPIO и окно параллельно
+        await asyncio.gather(
+            self.gpio_handler.run_loop(),
+            self.window.run_loop()
+        )
 
-def main():
+async def application():
     app = QApplication(sys.argv)
-
-    # Инициализация компонентов
     window = Window()
     gpio_handler = GPIOHandler()
 
-    # Настройка сигналов
+    # Подключение сигналов
     gpio_handler.fight_started.connect(window.start_timer)
     gpio_handler.fight_stopped.connect(window.pause_timer)
 
-    # Инициализация asyncio event loop
-    async_loop = AsyncQtEventLoop()
-    asyncio.set_event_loop(async_loop.loop)
-
-    # Запуск асинхронных задач
-    async_loop.loop.run_until_complete(
-        async_loop.run_tasks(
-            gpio_handler.run_loop(),
-            window.run_loop()
-        )
-    )
+    # Инициализация интеграции
+    async_integration = AsyncQtIntegration(gpio_handler, window)
+    asyncio.run_coroutine_threadsafe(async_integration.start(), async_integration.loop)
 
     window.show()
-    sys.exit(app.exec_())
+    await sys.exit(app.exec_())
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(application())
