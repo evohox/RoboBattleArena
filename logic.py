@@ -194,3 +194,4 @@ class Window(QMainWindow, Ui_MainWindow):
 
         event.accept()  # Подтверждаем закрытие
         super().closeEvent(event)
+        QApplication.quit()
