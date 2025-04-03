@@ -45,7 +45,7 @@ class Window(QMainWindow, Ui_MainWindow):
         elif event.key() in (Qt.Key_R, Qt.Key_K):
             self.reset_timer()
         elif event.key() == Qt.Key_Escape:
-            self.close()  # Корректное закрытие окна
+            self.handle_escape()  # Корректное закрытие окна
         elif event.key() == Qt.Key_S:
             self.open_settings_dialog()
         elif event.key() == Qt.Key_Left:
@@ -62,6 +62,16 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.time_left -= 5
             self.pause_timer()
             self.update_time_label()
+
+    def handle_escape(self):
+        """Обработка нажатия Escape с корректным завершением"""
+        # Создаем фейковое событие закрытия
+        close_event = QtGui.QCloseEvent()
+        self.closeEvent(close_event)
+
+        # Если событие не было принято, принудительно закрываем
+        if not close_event.isAccepted():
+            QApplication.quit()
 
     def open_settings_dialog(self):
         """Открываем диалог настроек."""
@@ -169,20 +179,17 @@ class Window(QMainWindow, Ui_MainWindow):
         else:
             raise Exception("Error with state")
 
+    async def cleanup(self):
+        """Корректная очистка ресурсов"""
+        await self.gpio_handler.stop()  # Останавливаем GPIO
+
     def close(self, event):
         """Корректное завершение при закрытии окна"""
-        # Отключаем светодиоды
+        # Запускаем очистку в асинхронном режиме
         asyncio.run_coroutine_threadsafe(
-            self.gpio_handler.set_color(Color(0, 0, 0)),
+            self.cleanup(),
             asyncio.get_event_loop()
         )
 
-        # Останавливаем GPIO
-        asyncio.run_coroutine_threadsafe(
-            self.gpio_handler.stop(),
-            asyncio.get_event_loop()
-        )
-
-        # Закрываем приложение
-        QApplication.quit()
+        event.accept()  # Подтверждаем закрытие
         super().closeEvent(event)
