@@ -9,21 +9,22 @@ class GPIOHandler(QObject):
     fight_started = pyqtSignal()
     fight_stopped = pyqtSignal()
 
-    # Настройки по умолчанию
-    LED_COUNT = 180
-    LED_PIN = 18
-    LED_FREQ_HZ = 800000
-    LED_DMA = 10
-    LED_BRIGHTNESS = 255
-    LED_INVERT = False
-    LED_CHANNEL = 0
-
-    # Состояния системы
-    STATE_WAITING = 0
-    STATE_READY = 1
-    STATE_FIGHT = 2
 
     def __init__(self):
+        # Настройки по умолчанию
+        self.LED_COUNT = 180
+        self.LED_PIN = 18
+        self.LED_FREQ_HZ = 800000
+        self.LED_DMA = 10
+        self.LED_BRIGHTNESS = 255
+        self.LED_INVERT = False
+        self.LED_CHANNEL = 0
+
+        # Состояния системы
+        self.STATE_WAITING = 0
+        self.STATE_READY = 1
+        self.STATE_FIGHT = 2
+
         super().__init__()
         self.current_state = self.STATE_WAITING
         self.team1_ready = False
@@ -86,7 +87,7 @@ class GPIOHandler(QObject):
                 # Проверка всех кнопок
                 for button in self.buttons:
                     if GPIO.input(button) == GPIO.HIGH:
-                        await self._handle_button_press(button)
+                        await self.handle_button_press(button)
                         await asyncio.sleep(0.1)  # Задержка для антидребезга
                         print(self.current_state, self.team1_ready, self.team2_ready, button)
 
@@ -97,7 +98,7 @@ class GPIOHandler(QObject):
             GPIO.cleanup()
             print("Программа завершена.")
 
-    async def _handle_button_press(self, button):
+    async def handle_button_press(self, button):
         """Обработка нажатия кнопки"""
         print("!")
         if button == self.TEAM1_READY and self.current_state == self.STATE_WAITING:
