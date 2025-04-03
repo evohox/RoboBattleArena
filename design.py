@@ -38,6 +38,7 @@ class Ui_MainWindow(object):
 
         # Прозрачный виджет для UI
         self.ui_widget = QWidget(self.central_widget)
+        self.ui_widget.setStyleSheet("background-color: transparent;")
         self.ui_widget.setAttribute(Qt.WA_TranslucentBackground)
         self.main_layout.addWidget(self.ui_widget)
 
