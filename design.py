@@ -7,7 +7,6 @@ from PyQt5.QtWidgets import (
     QFrame,
     QGraphicsDropShadowEffect,
     QInputDialog,
-    QStackedWidget,
 )
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import QTimer, Qt
@@ -19,45 +18,34 @@ class Ui_MainWindow(object):
         MainWindow.setWindowFlags(Qt.FramelessWindowHint)
         MainWindow.showFullScreen()
 
-        # Главный контейнер с наложением слоев
         self.central_widget = QWidget(MainWindow)
         MainWindow.setCentralWidget(self.central_widget)
 
-        # Layout для главного виджета
-        self.main_layout = QVBoxLayout(self.central_widget)
-        self.main_layout.setContentsMargins(0, 0, 0, 0)
-
-        # Виджет фона (будет растягиваться на весь экран)
         self.background_label = QLabel(self.central_widget)
         self.background_label.setPixmap(QPixmap("background.jpg"))
         self.background_label.setScaledContents(True)
         self.background_label.setGeometry(0, 0, MainWindow.width(), MainWindow.height())
-        self.background_label.lower()  # Отправляем на задний план
 
-        # Основной виджет с интерфейсом (прозрачный)
-        self.ui_widget = QWidget(self.central_widget)
-        self.ui_widget.setAttribute(Qt.WA_TranslucentBackground)
-        self.main_layout.addWidget(self.ui_widget)
-
-        # Layout для интерфейса
-        self.ui_layout = QVBoxLayout(self.ui_widget)
-        self.ui_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout = QVBoxLayout(self.central_widget)
+        main_layout.setContentsMargins(0, 0, 0, 0)
 
         # Запрашиваем количество команд и их названия
         self.team_names, self.preparation_time = self.get_team_names_and_time()
 
         # Проверяем количество команд и создаем соответствующий layout
         if len(self.team_names) == 1:
+            # Если одна команда, используем вертикальный layout
             central_layout = QVBoxLayout()
             central_layout.setAlignment(Qt.AlignCenter)
         else:
+            # Если две команды, используем горизонтальный layout
             central_layout = QHBoxLayout()
             central_layout.setAlignment(Qt.AlignCenter)
 
         central_layout.setContentsMargins(0, 0, 0, 0)
 
         # Фрейм для команды 1 (Красные)
-        self.team1_frame = QFrame(self.ui_widget)
+        self.team1_frame = QFrame()
         self.team1_frame.setStyleSheet(
             """
             QFrame {
@@ -77,7 +65,7 @@ class Ui_MainWindow(object):
         team1_layout.setContentsMargins(0, 0, 0, 0)
 
         # Метка для названия команды 1
-        self.team1_label = QLabel(self.team_names[0])
+        self.team1_label = QLabel(self.team_names[0], self.central_widget)
         self.team1_label.setFont(QFont("Bebas Neue", 40, QFont.Bold))
         self.team1_label.setStyleSheet(
             "color: rgba(255, 255, 255, 0.8); background: transparent;"
@@ -93,7 +81,7 @@ class Ui_MainWindow(object):
         team1_layout.addWidget(self.team1_label)
 
         # Таймер
-        self.timer_frame = QFrame(self.ui_widget)
+        self.timer_frame = QFrame()
         self.timer_frame.setStyleSheet(
             """
             QFrame {
@@ -109,7 +97,7 @@ class Ui_MainWindow(object):
         central_layout.addWidget(self.timer_frame, alignment=Qt.AlignCenter)
 
         timer_frame_layout = QVBoxLayout(self.timer_frame)
-        self.time_label = QLabel()
+        self.time_label = QLabel(self.central_widget)
         self.time_label.setFont(QFont("Bebas Neue", 120))
         self.time_label.setAlignment(Qt.AlignCenter)
         self.time_label.setMinimumSize(550, 0)
@@ -128,7 +116,7 @@ class Ui_MainWindow(object):
 
         # Фрейм для команды 2 (Синие)
         if len(self.team_names) > 1:
-            self.team2_frame = QFrame(self.ui_widget)
+            self.team2_frame = QFrame()
             self.team2_frame.setStyleSheet(
                 """
                 QFrame {
@@ -148,7 +136,7 @@ class Ui_MainWindow(object):
             team2_layout.setContentsMargins(0, 0, 0, 0)
 
             # Метка для названия команды 2
-            self.team2_label = QLabel(self.team_names[1])
+            self.team2_label = QLabel(self.team_names[1], self.central_widget)
             self.team2_label.setFont(QFont("Bebas Neue", 40, QFont.Bold))
             self.team2_label.setStyleSheet(
                 "color: rgba(255, 255, 255, 0.8); background: transparent;"
@@ -163,20 +151,12 @@ class Ui_MainWindow(object):
 
             team2_layout.addWidget(self.team2_label)
 
-        # Добавляем центральный layout
-        self.ui_layout.addLayout(central_layout)
-
-        # Обработчик изменения размера
-        MainWindow.resizeEvent = self.on_resize
+        # Добавляем центральный layout на основной
+        main_layout.addLayout(central_layout)
 
         self.timer = QTimer()
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.update_timer)
-
-    def on_resize(self, event):
-        """Обновляем размер фона при изменении размера окна"""
-        self.background_label.setGeometry(0, 0, event.size().width(), event.size().height())
-        event.accept()
 
     def get_team_names_and_time(self):
         team_count, ok = QInputDialog.getInt(
@@ -196,6 +176,7 @@ class Ui_MainWindow(object):
                 else:
                     team_names.append(f"Команда {i + 1}")  # Название по умолчанию
 
+            # Запрашиваем время подготовки
             time_options = ["3 минуты", "7 минут"]
             time_index, ok = QInputDialog.getItem(
                 None, "Время подготовки", "Выберите время подготовки:", time_options
@@ -204,7 +185,7 @@ class Ui_MainWindow(object):
 
             return team_names, preparation_time
 
-        return ["Красные", "Синие"], 3
+        return ["Красные", "Синие"], 3  # Названия по умолчанию, если ввод отменен
 
     def set_preparation_time(self, minutes):
         self.preparation_time = minutes
