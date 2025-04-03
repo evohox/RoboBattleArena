@@ -56,7 +56,6 @@ class GPIOHandler(QObject):
         for button in self.buttons:
             GPIO.setup(button, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-        self._setup_hardware()
         self._running = False
         self._task = None
 
