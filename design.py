@@ -85,6 +85,8 @@ class Ui_MainWindow(object):
             QFrame {
                 background-color: rgba(0, 0, 0, 0.7);
                 border-radius: 20px;
+                padding: 30px;
+                border: none;
             }
             """
         )
