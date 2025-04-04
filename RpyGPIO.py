@@ -35,8 +35,8 @@ class GPIOHandler(QObject):
         self.TEAM1_STOP = 6
         self.TEAM2_READY = 26
         self.TEAM2_STOP = 19
-        self.REFEREE_START = 5
-        self.REFEREE_STOP = 16
+        self.REFEREE_START = 16
+        self.REFEREE_STOP = 5
 
         # Настройка светодиодной ленты
         self.strip = PixelStrip(
@@ -88,7 +88,7 @@ class GPIOHandler(QObject):
                 for button in self.buttons:
                     if GPIO.input(button) == GPIO.HIGH:
                         await self.handle_button_press(button)
-                        await asyncio.sleep(0.1)  # Задержка для антидребезга
+                        await asyncio.sleep(0.05)  # Задержка для антидребезга
                         print(self.current_state, self.team1_ready, self.team2_ready, button)
 
                 await asyncio.sleep(0.05)
@@ -103,34 +103,43 @@ class GPIOHandler(QObject):
         print("!")
         if button == self.TEAM1_READY and self.current_state == self.STATE_WAITING:
             self.team1_ready = True
-            await self.blink(Color(0, 255, 0), 2)  # Зеленый
+            await self.blink(Color(0, 255, 0), team=1, duration=1)  # Зеленый
             if self.team2_ready:
                 self.current_state = self.STATE_READY
 
         elif button == self.TEAM2_READY and self.current_state == self.STATE_WAITING:
             self.team2_ready = True
-            await self.blink(Color(0, 255, 0), 2)  # Зеленый
+            await self.blink(Color(0, 255, 0), team=2, duration=1)  # Зеленый
             if self.team1_ready:
                 self.current_state = self.STATE_READY
 
         elif button == self.REFEREE_START and self.current_state == self.STATE_READY:
             self.current_state = self.STATE_FIGHT
-            await self.fade_to_color(Color(255, 0, 0), 2)  # Красный
             self.fight_started.emit()
+            await self.fade_to_color(Color(255, 0, 0), team=0, duration=1)  # Красный
+
 
         elif (button in [self.TEAM1_STOP, self.TEAM2_STOP, self.REFEREE_STOP]) and self.current_state != self.STATE_WAITING:
-            await self.reset_to_waiting()
             self.fight_stopped.emit()
+            await self.reset_to_waiting()
 
-    async def set_color(self, color, duration=0):
+
+    async def set_color(self, color, team=0):
         """Установка цвета всей ленты"""
-        for i in range(self.strip.numPixels()):
-            self.strip.setPixelColor(i, color)
+        if team == 1:
+            for i in range(91, self.strip.numPixels()):
+                self.strip.setPixelColor(i, color)
+        elif team == 2:
+            for i in range(self.strip.numPixels()-90):
+                self.strip.setPixelColor(i, color)
+        else:
+            for i in range(self.strip.numPixels()):
+                self.strip.setPixelColor(i, color)
         self.strip.show()
-        if duration > 0:
-            await asyncio.sleep(duration)
+        # if duration > 0:
+        #     await asyncio.sleep(duration)
 
-    async def fade_to_color(self, target_color, duration=1.0):
+    async def fade_to_color(self, target_color, team=0, duration=1.0):
         """Плавный переход к указанному цвету"""
         steps = 100
         delay = duration / steps
@@ -149,16 +158,17 @@ class GPIOHandler(QObject):
             g = int(current_g + (target_g - current_g) * (step / steps))
             b = int(current_b + (target_b - current_b) * (step / steps))
 
-            for i in range(self.strip.numPixels()):
-                self.strip.setPixelColor(i, Color(r, g, b))
-            self.strip.show()
+            # for i in range(self.strip.numPixels()):
+            #     self.strip.setPixelColor(i, Color(r, g, b))
+            # self.strip.show()
+            self.set_color(Color(r, g, b), team=team)
             await asyncio.sleep(delay)
 
-    async def blink(self, target_color, duration=2.0):
+    async def blink(self, target_color, team=0, duration=1.0):
         """Мигание цветом"""
         current_color = self.strip.getPixelColor(0)
-        await self.fade_to_color(target_color, duration/2)
-        await self.fade_to_color(current_color, duration/2)
+        await self.fade_to_color(target_color, team=team, duration=duration/2)
+        await self.fade_to_color(current_color, team=team, duration=duration/2)
 
     async def reset_to_waiting(self):
         """Сброс в состояние ожидания"""
