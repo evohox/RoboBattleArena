@@ -6,7 +6,7 @@ from logic import Window
 from RpyGPIO import GPIOHandler
 
 class AsyncQtIntegration:
-    def init(self, gpio_handler, window):
+    def __init__(self, gpio_handler, window):
         self.gpio_handler = gpio_handler
         self.window = window
         self.loop = asyncio.new_event_loop()
@@ -73,5 +73,5 @@ def application():
     finally:
         async_integration.loop.call_soon_threadsafe(async_integration.loop.stop)
 
-if __name__ == "main":
+if __name__ == "__main__":
     application()
