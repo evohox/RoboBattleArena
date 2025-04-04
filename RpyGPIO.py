@@ -100,7 +100,6 @@ class GPIOHandler(QObject):
 
     async def handle_button_press(self, button):
         """Обработка нажатия кнопки"""
-        print("!")
         if button == self.TEAM1_READY and self.current_state == self.STATE_WAITING:
             self.team1_ready = True
             await self.blink(Color(0, 255, 0), team=1, duration=1)  # Зеленый
@@ -161,7 +160,7 @@ class GPIOHandler(QObject):
             # for i in range(self.strip.numPixels()):
             #     self.strip.setPixelColor(i, Color(r, g, b))
             # self.strip.show()
-            self.set_color(Color(r, g, b), team=team)
+            await self.set_color(Color(r, g, b), team=team)
             await asyncio.sleep(delay)
 
     async def blink(self, target_color, team=0, duration=1.0):
