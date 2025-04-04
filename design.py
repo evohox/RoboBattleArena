@@ -80,14 +80,13 @@ class Ui_MainWindow(object):
         self.timer_frame.setStyleSheet("""
             QFrame {
                 background: qradialgradient(cx:0.5, cy:0.5, radius:1,
-                    stop:0 rgba(255, 0, 0, 0.8),
+                    stop:0 rgba(0, 0, 0, 0.8),
                     stop:1 rgba(0, 0, 0, 0.5));
                 border-radius: 15px;
             }
         # """)
-        # self.timer_frame.setMinimumSize(650, 400)
-        # self.timer_frame.setMaximumSize(900, 500)
-        self.timer_frame.setFixedSize(900, 500)
+        self.timer_frame.setMinimumSize(650, 400)
+        self.timer_frame.setMaximumSize(900, 500)
 
         # # Ключевые настройки для непрозрачности
         # self.timer_frame.setAttribute(Qt.WA_NoSystemBackground, True)
