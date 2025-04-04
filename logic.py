@@ -4,10 +4,9 @@ from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
     QDialog,
-    QShortcut
 )
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QFont, QCloseEvent, QKeySequence
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont, QCloseEvent
 from design import Ui_MainWindow
 from settings import SettingsDialog
 from RpyGPIO import GPIOHandler
@@ -27,9 +26,6 @@ class Window(QMainWindow, Ui_MainWindow):
         self.state = "Idle"  # Начальное состояние таймера
         self.status = "Подготовка"
 
-        # Настройка шортката для закрытия
-        self.close_shortcut = QShortcut(QKeySequence(Qt.Key_Escape), self)
-        self.close_shortcut.activated.connect(self.handle_close(event=QCloseEvent))
 
         # Устанавливаем время подготовки
         self.set_preparation_time(self.preparation_time)
@@ -50,9 +46,8 @@ class Window(QMainWindow, Ui_MainWindow):
             self.toggle_timer()
         elif event.key() in (Qt.Key_R, Qt.Key_K):
             self.reset_timer()
-        # elif event.key() == Qt.Key_Escape:
-        #     print("Escape pressed. Closing.")
-        #     self.close()
+        elif event.key() == Qt.Key_Escape:
+            QApplication.quit()
         elif event.key() == Qt.Key_S:
             self.open_settings_dialog()
         elif event.key() == Qt.Key_Left:
@@ -69,38 +64,6 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.time_left -= 5
             self.pause_timer()
             self.update_time_label()
-
-    def handle_close(self, event):
-        """Обработчик закрытия через Escape"""
-        print("Close requested via Escape")
-        # Получаем текущий event loop
-        loop = None
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-
-        # Запускаем корутину очистки
-        if loop.is_running():
-            # Если loop уже запущен, используем create_task
-            asyncio.create_task(self.cleanup_and_exit())
-        else:
-            # Иначе запускаем loop
-            loop.run_until_complete(self.cleanup_and_exit())
-
-        event.accept()  # Подтверждаем закрытие
-
-    async def cleanup_and_exit(self):
-        """Корректное завершение программы"""
-        print("Cleaning up...")
-        try:
-            await self.gpio_handler.stop()  # Ожидаем завершения GPIO
-        except Exception as e:
-            print(f"Ошибка при остановке GPIO: {e}")
-        finally:
-            # Гарантируем, что приложение закроется
-            QApplication.quit()
 
     def open_settings_dialog(self):
         """Открываем диалог настроек."""
