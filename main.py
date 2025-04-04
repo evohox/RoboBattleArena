@@ -45,21 +45,27 @@ def application():
         """Корректное завершение приложения с остановкой asyncio-задач."""
         def _shutdown_in_loop():
             try:
+                # Отменяем все задачи
                 tasks = asyncio.all_tasks(async_integration.loop)
                 for task in tasks:
                     task.cancel()
 
+                # Собираем отмененные задачи без timeout
                 async def _gather_cancelled():
                     try:
                         await asyncio.gather(*tasks, return_exceptions=True)
                     except:
                         pass
 
+                # Запускаем сбор отмененных задач
                 future = asyncio.run_coroutine_threadsafe(
                     _gather_cancelled(), async_integration.loop
                 )
-                future.result(timeout=2)
+                # Убираем timeout или увеличиваем его
+                future.result()  # Убрали timeout=2
 
+            except Exception as e:
+                print(f"Ошибка при завершении: {e}")
             finally:
                 async_integration.loop.call_soon_threadsafe(async_integration.loop.stop)
                 app.quit()
