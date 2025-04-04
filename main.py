@@ -26,6 +26,19 @@ class AsyncQtIntegration:
             self.window.run_loop()
         )
 
+    async def shutdown(self):
+        """Корректное завершение всех задач и освобождение ресурсов"""
+        # Отменяем все задачи
+        tasks = [t for t in asyncio.all_tasks(self.loop) if not t.done()]
+        for task in tasks:
+            task.cancel()
+        # Ожидаем завершения задач
+        await asyncio.gather(*tasks, return_exceptions=True)
+        # Останавливаем GPIO
+        await self.gpio_handler.stop()
+        # Останавливаем event loop
+        self.loop.stop()
+
 def application():
     app = QApplication(sys.argv)
     window = Window()
@@ -43,41 +56,26 @@ def application():
 
     # Обработка закрытия приложения
     def shutdown():
-        """Корректное завершение приложения с остановкой asyncio-задач"""
-        def _shutdown_in_loop():
-            # Эта функция выполняется внутри asyncio-потока
-            try:
-                # 1. Отменяем все задачи
-                tasks = asyncio.all_tasks(async_integration.loop)
-                for task in tasks:
-                    task.cancel()
-
-                # 2. Даем задачам шанс корректно завершиться
-                async def _gather_cancelled():
-                    try:
-                        await asyncio.gather(*tasks, return_exceptions=True)
-                    except:
-                        pass
-
-                # 3. Запускаем ожидание завершения
-                future = asyncio.run_coroutine_threadsafe(_gather_cancelled(), async_integration.loop)
-                future.result(timeout=2)  # Ждем максимум 2 секунды
-
-            finally:
-                # 4. Останавливаем loop и приложение
-                async_integration.loop.call_soon_threadsafe(async_integration.loop.stop)
-                app.quit()
-
+        """Корректное завершение приложения"""
         # Запускаем shutdown в потоке asyncio
-        async_integration.loop.call_soon_threadsafe(_shutdown_in_loop)
+        future = asyncio.run_coroutine_threadsafe(async_integration.shutdown(), async_integration.loop)
+        try:
+            future.result(timeout=5)  # Ждем максимум 5 секунд
+        except Exception as e:
+            print(f"Ошибка при завершении: {e}")
+        finally:
+            async_integration.loop.close()
+            app.quit()
 
     # Привязываем shutdown к закрытию окна
     window.closeEvent = lambda event: shutdown()
 
     try:
         sys.exit(app.exec_())
+    except Exception as e:
+        print(f"Ошибка при выполнении приложения: {e}")
     finally:
-        # Корректное завершение event loop при выходе
+        # Гарантируем остановку event loop
         async_integration.loop.call_soon_threadsafe(async_integration.loop.stop)
 
 if __name__ == "__main__":
