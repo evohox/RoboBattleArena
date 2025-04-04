@@ -102,20 +102,20 @@ class GPIOHandler(QObject):
         """Обработка нажатия кнопки"""
         if button == self.TEAM1_READY and self.current_state == self.STATE_WAITING:
             self.team1_ready = True
-            await self.blink(Color(0, 255, 0), team=1, duration=1)  # Зеленый
+            await self.blink(Color(0, 255, 0), team=1, duration=2)  # Зеленый
             if self.team2_ready:
                 self.current_state = self.STATE_READY
 
         elif button == self.TEAM2_READY and self.current_state == self.STATE_WAITING:
             self.team2_ready = True
-            await self.blink(Color(0, 255, 0), team=2, duration=1)  # Зеленый
+            await self.blink(Color(0, 255, 0), team=2, duration=2)  # Зеленый
             if self.team1_ready:
                 self.current_state = self.STATE_READY
 
         elif button == self.REFEREE_START and self.current_state == self.STATE_READY:
             self.current_state = self.STATE_FIGHT
             self.fight_started.emit()
-            await self.fade_to_color(Color(255, 0, 0), team=0, duration=1)  # Красный
+            await self.fade_to_color(Color(255, 0, 0), team=0, duration=2)  # Красный
 
 
         elif (button in [self.TEAM1_STOP, self.TEAM2_STOP, self.REFEREE_STOP]) and self.current_state != self.STATE_WAITING:
@@ -163,7 +163,7 @@ class GPIOHandler(QObject):
             await self.set_color(Color(r, g, b), team=team)
             await asyncio.sleep(delay)
 
-    async def blink(self, target_color, team=0, duration=1.0):
+    async def blink(self, target_color, team=0, duration=2.0):
         """Мигание цветом"""
         current_color = self.strip.getPixelColor(0)
         await self.fade_to_color(target_color, team=team, duration=duration/2)
