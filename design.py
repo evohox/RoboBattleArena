@@ -79,8 +79,7 @@ class Ui_MainWindow(object):
         team1_layout.addWidget(self.team1_label)
 
         # Фрейм для таймера (серый фон)
-        # Фрейм для таймера (серый фон)
-        self.timer_frame = QFrame()
+        self.timer_frame = QFrame(self.ui_widget)
         self.timer_frame.setStyleSheet("""
             QFrame {
                 background-color: black;
@@ -105,12 +104,12 @@ class Ui_MainWindow(object):
         central_layout.addWidget(self.timer_frame, alignment=Qt.AlignCenter)
 
         # Тень для таймера
-        # shadow = QGraphicsDropShadowEffect()
-        # shadow.setBlurRadius(50)
-        # shadow.setXOffset(0)
-        # shadow.setYOffset(0)
-        # shadow.setColor(QtGui.QColor(0, 0, 0, 150))
-        # self.timer_frame.setGraphicsEffect(shadow)
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(50)
+        shadow.setXOffset(0)
+        shadow.setYOffset(0)
+        shadow.setColor(QtGui.QColor(0, 0, 0, 150))
+        self.timer_frame.setGraphicsEffect(shadow)
 
         # Layout для таймера
         timer_frame_layout = QVBoxLayout(self.timer_frame)
