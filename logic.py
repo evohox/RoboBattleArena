@@ -46,6 +46,7 @@ class Window(QMainWindow, Ui_MainWindow):
         elif event.key() in (Qt.Key_R, Qt.Key_K):
             self.reset_timer()
         elif event.key() == Qt.Key_Escape:
+            print("Esc")
             self.close()
         elif event.key() == Qt.Key_S:
             self.open_settings_dialog()
@@ -66,6 +67,7 @@ class Window(QMainWindow, Ui_MainWindow):
 
     def closeEvent(self, event: QCloseEvent):
         """Вызывается при закрытии окна"""
+        print("Close")
         loop = asyncio.get_event_loop()
         if loop.is_running():
             loop.run_until_complete(self.cleanup_and_exit())
@@ -73,6 +75,7 @@ class Window(QMainWindow, Ui_MainWindow):
 
     async def cleanup_and_exit(self):
         """Корректное завершение программы"""
+        print("event close")
         try:
             await self.gpio_handler.stop()  # Ожидаем завершения GPIO
         except Exception as e:
