@@ -29,7 +29,7 @@ class Window(QMainWindow, Ui_MainWindow):
 
         # Настройка шортката для закрытия
         self.close_shortcut = QShortcut(QKeySequence(Qt.Key_Escape), self)
-        self.close_shortcut.activated.connect(self.handle_close)
+        self.close_shortcut.activated.connect(self.handle_close(event=QCloseEvent))
 
         # Устанавливаем время подготовки
         self.set_preparation_time(self.preparation_time)
@@ -70,15 +70,9 @@ class Window(QMainWindow, Ui_MainWindow):
             self.pause_timer()
             self.update_time_label()
 
-    def handle_close(self):
+    def handle_close(self, event):
         """Обработчик закрытия через Escape"""
         print("Close requested via Escape")
-        self.close()  # Это вызовет closeEvent
-
-    def closeEvent(self, event: QCloseEvent):
-        """Вызывается при закрытии окна"""
-        print("Close event triggered")
-
         # Получаем текущий event loop
         loop = None
         try:
