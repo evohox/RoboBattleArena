@@ -78,7 +78,7 @@ class Ui_MainWindow(object):
         self.team1_label.setAlignment(Qt.AlignCenter)
         team1_layout.addWidget(self.team1_label)
 
-        # Фрейм для таймера (серый фон)
+        # Фрейм для таймера
         self.timer_frame = QFrame(self.ui_widget)
         self.timer_frame.setStyleSheet("""
             QFrame {
@@ -91,15 +91,10 @@ class Ui_MainWindow(object):
         self.timer_frame.setMinimumSize(650, 400)
         self.timer_frame.setMaximumSize(900, 500)
 
-        # Ключевые настройки для непрозрачности
-        self.timer_frame.setAttribute(Qt.WA_NoSystemBackground, True)
-        self.timer_frame.setAttribute(Qt.WA_OpaquePaintEvent, True)
-        self.timer_frame.setAutoFillBackground(True)
-
-        # Устанавливаем палитру
-        palette = self.timer_frame.palette()
-        palette.setColor(self.timer_frame.backgroundRole(), Qt.black)
-        self.timer_frame.setPalette(palette)
+        # # Ключевые настройки для непрозрачности
+        # self.timer_frame.setAttribute(Qt.WA_NoSystemBackground, True)
+        # self.timer_frame.setAttribute(Qt.WA_OpaquePaintEvent, True)
+        # self.timer_frame.setAutoFillBackground(True)
 
         central_layout.addWidget(self.timer_frame, alignment=Qt.AlignCenter)
 
