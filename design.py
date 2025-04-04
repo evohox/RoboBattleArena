@@ -147,9 +147,14 @@ class Ui_MainWindow(object):
                 name, ok = QInputDialog.getText(None, f"Название команды {i + 1}", f"Введите название команды {i + 1}:")
                 team_names.append(name if ok and name else f"Команда {i + 1}")
 
-            time_options = ["3 минуты", "7 минут"]
+            time_options = ["3 минуты", "7 минут", "0 Минут"]
             time_index, ok = QInputDialog.getItem(None, "Время подготовки", "Выберите время подготовки:", time_options)
-            preparation_time = 3 if time_index == "3 минуты" else 7
+            if time_index == "3 минуты":
+                preparation_time = 3
+            elif time_index == "7 минут":
+                preparation_time = 7
+            else:
+                preparation_time = 0
 
             return team_names, preparation_time
 
