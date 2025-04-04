@@ -118,7 +118,7 @@ class GPIOHandler(QObject):
             await self.fade_to_color(Color(255, 0, 0), team=0, duration=2)  # Красный
 
 
-        elif (button in [self.TEAM1_STOP, self.TEAM2_STOP, self.REFEREE_STOP]) and self.current_state != self.STATE_WAITING:
+        elif (button in [self.TEAM1_STOP, self.TEAM2_STOP, self.REFEREE_STOP]):
             self.fight_stopped.emit()
             await self.reset_to_waiting()
 
