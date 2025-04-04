@@ -42,17 +42,37 @@ def application():
     window.show()
 
     # Обработка закрытия приложения
-    # def shutdown():
-    #     # Отменяем все задачи в event loop
-    #     for task in asyncio.all_tasks(async_integration.loop):
-    #         task.cancel()
-    #     # Останавливаем event loop
-    #     async_integration.loop.call_soon_threadsafe(async_integration.loop.stop)
-    #     # Закрываем приложение
-    #     app.quit()
+    def shutdown():
+        """Корректное завершение приложения с остановкой asyncio-задач"""
+        def _shutdown_in_loop():
+            # Эта функция выполняется внутри asyncio-потока
+            try:
+                # 1. Отменяем все задачи
+                tasks = asyncio.all_tasks(async_integration.loop)
+                for task in tasks:
+                    task.cancel()
 
-    # # Привязываем shutdown к закрытию окна
-    # window.closeEvent = lambda event: shutdown()
+                # 2. Даем задачам шанс корректно завершиться
+                async def _gather_cancelled():
+                    try:
+                        await asyncio.gather(*tasks, return_exceptions=True)
+                    except:
+                        pass
+
+                # 3. Запускаем ожидание завершения
+                future = asyncio.run_coroutine_threadsafe(_gather_cancelled(), async_integration.loop)
+                future.result(timeout=2)  # Ждем максимум 2 секунды
+
+            finally:
+                # 4. Останавливаем loop и приложение
+                async_integration.loop.call_soon_threadsafe(async_integration.loop.stop)
+                app.quit()
+
+        # Запускаем shutdown в потоке asyncio
+        async_integration.loop.call_soon_threadsafe(_shutdown_in_loop)
+
+    # Привязываем shutdown к закрытию окна
+    window.closeEvent = lambda event: shutdown()
 
     try:
         sys.exit(app.exec_())
