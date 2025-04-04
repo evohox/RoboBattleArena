@@ -47,7 +47,7 @@ class Window(QMainWindow, Ui_MainWindow):
             self.reset_timer()
         elif event.key() == Qt.Key_Escape:
             print("Esc")
-            self.closeEvent()
+            self.closeProg()
         elif event.key() == Qt.Key_S:
             self.open_settings_dialog()
         elif event.key() == Qt.Key_Left:
@@ -65,7 +65,7 @@ class Window(QMainWindow, Ui_MainWindow):
             self.pause_timer()
             self.update_time_label()
 
-    def closeEvent(self, event: QCloseEvent):
+    def closeProg(self, event: QCloseEvent):
         """Вызывается при закрытии окна"""
         print("Close")
         loop = asyncio.get_event_loop()
