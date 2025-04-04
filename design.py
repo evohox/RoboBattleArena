@@ -38,7 +38,7 @@ class Ui_MainWindow(object):
 
         # Прозрачный виджет для UI
         self.ui_widget = QWidget(self.central_widget)
-        self.ui_widget.setAttribute(Qt.WA_TranslucentBackground)
+        # self.ui_widget.setAttribute(Qt.WA_TranslucentBackground)
         self.main_layout.addWidget(self.ui_widget)
 
         # Layout для интерфейса
@@ -48,11 +48,8 @@ class Ui_MainWindow(object):
         # Запрашиваем количество команд и их названия
         self.team_names, self.preparation_time = self.get_team_names_and_time()
 
-        # Выбираем layout
-        if len(self.team_names) == 1:
-            central_layout = QVBoxLayout()
-        else:
-            central_layout = QHBoxLayout()
+        # layout
+        central_layout = QHBoxLayout()
         central_layout.setAlignment(Qt.AlignCenter)
         central_layout.setContentsMargins(0, 0, 0, 0)
 
