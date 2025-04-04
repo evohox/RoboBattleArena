@@ -42,17 +42,17 @@ def application():
     window.show()
 
     # Обработка закрытия приложения
-    def shutdown():
-        # Отменяем все задачи в event loop
-        for task in asyncio.all_tasks(async_integration.loop):
-            task.cancel()
-        # Останавливаем event loop
-        async_integration.loop.call_soon_threadsafe(async_integration.loop.stop)
-        # Закрываем приложение
-        app.quit()
+    # def shutdown():
+    #     # Отменяем все задачи в event loop
+    #     for task in asyncio.all_tasks(async_integration.loop):
+    #         task.cancel()
+    #     # Останавливаем event loop
+    #     async_integration.loop.call_soon_threadsafe(async_integration.loop.stop)
+    #     # Закрываем приложение
+    #     app.quit()
 
-    # Привязываем shutdown к закрытию окна
-    window.closeEvent = lambda event: shutdown()
+    # # Привязываем shutdown к закрытию окна
+    # window.closeEvent = lambda event: shutdown()
 
     try:
         sys.exit(app.exec_())
