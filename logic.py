@@ -80,8 +80,6 @@ class Window(QMainWindow, Ui_MainWindow):
             await self.gpio_handler.stop()  # Ожидаем завершения GPIO
         except Exception as e:
             print(f"Ошибка при остановке GPIO: {e}")
-        finally:
-            QApplication.quit()  # Завершаем приложение
 
     def open_settings_dialog(self):
         """Открываем диалог настроек."""
