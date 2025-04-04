@@ -65,10 +65,21 @@ class Window(QMainWindow, Ui_MainWindow):
             self.pause_timer()
             self.update_time_label()
 
+    def closeEvent(self, event: QCloseEvent):
+        """Вызывается при закрытии окна"""
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            loop.run_until_complete(self.cleanup_and_exit())
+        event.accept()  # Подтверждаем закрытие
+
     async def cleanup_and_exit(self):
         """Корректное завершение программы"""
-        await self.gpio_handler.stop()
-        QApplication.quit()
+        try:
+            await self.gpio_handler.stop()  # Ожидаем завершения GPIO
+        except Exception as e:
+            print(f"Ошибка при остановке GPIO: {e}")
+        finally:
+            QApplication.quit()  # Завершаем приложение
 
     def open_settings_dialog(self):
         """Открываем диалог настроек."""

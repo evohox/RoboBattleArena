@@ -62,11 +62,19 @@ class GPIOHandler(QObject):
 
     async def stop(self):
         """Остановка обработки"""
-        self._running = False
+        print("Stopping GPIO...")
+        self._running = False  # Флаг для остановки цикла
+
         if self._task:
-            await self._task
-        await self.set_color(Color(0, 0, 0))  # Выключить светодиоды
-        GPIO.cleanup()
+            self._task.cancel()  # Отменяем задачу
+            try:
+                await self._task  # Ждём завершения
+            except asyncio.CancelledError:
+                pass  # Ожидаемо, если задача отменена
+
+        await self.set_color(Color(0, 0, 0))  # Выключаем светодиоды
+        GPIO.cleanup()  # Освобождаем GPIO
+        print("GPIO stopped.")
 
     async def run_loop(self):
         """Основной цикл обработки кнопок"""
