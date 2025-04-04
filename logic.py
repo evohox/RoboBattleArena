@@ -47,7 +47,7 @@ class Window(QMainWindow, Ui_MainWindow):
             self.reset_timer()
         elif event.key() == Qt.Key_Escape:
             print("Esc")
-            self.close()
+            self.closeEvent()
         elif event.key() == Qt.Key_S:
             self.open_settings_dialog()
         elif event.key() == Qt.Key_Left:
