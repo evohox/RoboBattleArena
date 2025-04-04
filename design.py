@@ -88,11 +88,6 @@ class Ui_MainWindow(object):
         self.timer_frame.setMinimumSize(650, 400)
         self.timer_frame.setMaximumSize(900, 500)
 
-        # # Ключевые настройки для непрозрачности
-        # self.timer_frame.setAttribute(Qt.WA_NoSystemBackground, True)
-        # self.timer_frame.setAttribute(Qt.WA_OpaquePaintEvent, True)
-        # self.timer_frame.setAutoFillBackground(True)
-
         central_layout.addWidget(self.timer_frame, alignment=Qt.AlignCenter)
 
         # Тень для таймера

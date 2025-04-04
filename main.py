@@ -40,7 +40,12 @@ def application():
     asyncio.run_coroutine_threadsafe(async_integration.start(), async_integration.loop)
 
     window.show()
-    sys.exit(app.exec_())
+
+    try:
+        sys.exit(app.exec_())
+    finally:
+        # Корректное завершение event loop при выходе
+        async_integration.loop.call_soon_threadsafe(async_integration.loop.stop)
 
 if __name__ == "__main__":
     application()

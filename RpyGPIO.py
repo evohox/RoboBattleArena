@@ -31,12 +31,12 @@ class GPIOHandler(QObject):
         self.team2_ready = False
 
         # Настройка пинов для кнопок
-        self.TEAM1_READY = 6
-        self.TEAM1_STOP = 5
-        self.TEAM2_READY = 13
-        self.TEAM2_STOP = 16
-        self.REFEREE_START = 19
-        self.REFEREE_STOP = 26
+        self.TEAM1_READY = 13
+        self.TEAM1_STOP = 6
+        self.TEAM2_READY = 26
+        self.TEAM2_STOP = 19
+        self.REFEREE_START = 5
+        self.REFEREE_STOP = 16
 
         # Настройка светодиодной ленты
         self.strip = PixelStrip(
@@ -59,14 +59,6 @@ class GPIOHandler(QObject):
 
         self._running = False
         self._task = None
-
-    # async def start(self):
-    #     """Запуск основного цикла обработки"""
-    #     if self._running:
-    #         return
-
-    #     self._running = True
-    #     self._task = asyncio.create_task(self._run_loop())
 
     async def stop(self):
         """Остановка обработки"""
