@@ -46,8 +46,7 @@ class Window(QMainWindow, Ui_MainWindow):
         elif event.key() in (Qt.Key_R, Qt.Key_K):
             self.reset_timer()
         elif event.key() == Qt.Key_Escape:
-            loop = asyncio.get_event_loop()
-            loop.run_until_complete(self.cleanup_and_exit())
+            self.close()
         elif event.key() == Qt.Key_S:
             self.open_settings_dialog()
         elif event.key() == Qt.Key_Left:
