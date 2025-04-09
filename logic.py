@@ -11,7 +11,8 @@ from design import Ui_MainWindow
 from settings import SettingsDialog
 from RpyGPIO import GPIOHandler
 from pydub import AudioSegment
-from pydub.playback import play
+# from pydub.playback import play
+from playsound import playsound
 
 
 class Window(QMainWindow, Ui_MainWindow):
@@ -68,10 +69,9 @@ class Window(QMainWindow, Ui_MainWindow):
             self.update_time_label()
 
     def refery_handle(self):
-        self.start_timer()
-        print(self.status, self.state)
         if self.status == "Подготовка" and self.state == "Ongoing":
             self.time_left = 0
+        self.start_timer()
 
     def open_settings_dialog(self):
         """Открываем диалог настроек."""
@@ -126,8 +126,9 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.time_left = self.initial_time + 3
                 self.status = "Бой"
                 self.update_time_label()  # Обновляем метку времени
-                sound = AudioSegment.from_file('Timer_sound.mp3', format='mp3')
-                play(sound)
+                # sound = AudioSegment.from_file('Timer_sound.mp3', format='mp3')
+                # play(sound)
+                playsound('Timer_sound.mp3')
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
