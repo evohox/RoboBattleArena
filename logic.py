@@ -13,7 +13,9 @@ from RpyGPIO import GPIOHandler
 from pydub import AudioSegment
 from pydub.playback import play
 import pygame
+import os
 
+os.environ['SDL_AUDIODRIVER'] = 'pulse'  # Использовать PulseAudio вместо ALSA
 
 class Window(QMainWindow, Ui_MainWindow):
     def __init__(self):
