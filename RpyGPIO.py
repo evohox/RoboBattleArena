@@ -112,7 +112,7 @@ class GPIOHandler(QObject):
             if self.team1_ready:
                 self.current_state = self.STATE_READY
 
-        elif button == self.REFEREE_START and self.current_state == self.STATE_READY:
+        elif button == self.REFEREE_START:
             self.current_state = self.STATE_FIGHT
             self.fight_started.emit()
             await self.fade_to_color(Color(255, 0, 0), team=0, duration=2)  # Красный
