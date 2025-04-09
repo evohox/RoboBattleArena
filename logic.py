@@ -12,7 +12,7 @@ from settings import SettingsDialog
 from RpyGPIO import GPIOHandler
 from pydub import AudioSegment
 # from pydub.playback import play
-from playsound import playsound
+import pygame
 
 
 class Window(QMainWindow, Ui_MainWindow):
@@ -128,7 +128,9 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.update_time_label()  # Обновляем метку времени
                 # sound = AudioSegment.from_file('Timer_sound.mp3', format='mp3')
                 # play(sound)
-                playsound('Timer_sound.mp3')
+                pygame.mixer.init()
+                pygame.mixer.music.load('Timer_sound.mp3')
+                pygame.mixer.music.play()
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
