@@ -5,11 +5,13 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QDialog,
 )
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QCloseEvent
+from PyQt5.QtCore import Qt, QCoreApplication, QProcess
+from PyQt5.QtGui import QFont
 from design import Ui_MainWindow
 from settings import SettingsDialog
 from RpyGPIO import GPIOHandler
+from pydub import AudioSegment
+from pydub.playback import play
 
 
 class Window(QMainWindow, Ui_MainWindow):
@@ -65,6 +67,10 @@ class Window(QMainWindow, Ui_MainWindow):
             self.pause_timer()
             self.update_time_label()
 
+    def refery_handle(self):
+        if self.status == "Подготовка":
+            self.time_left = 0
+
     def open_settings_dialog(self):
         """Открываем диалог настроек."""
         dialog = SettingsDialog(self)
@@ -102,19 +108,24 @@ class Window(QMainWindow, Ui_MainWindow):
 
     def reset_timer(self):
         """Сбрасываем таймер."""
-        self.state = "Idle"  # Меняем состояние на "Ожидание"
-        self.timer.stop()  # Останавливаем таймер
-        self.time_left = self.initial_time  # Возвращаем время к начальному
-        self.update_time_label()  # Обновляем метку времени
+        # self.state = "Idle"  # Меняем состояние на "Ожидание"
+        # self.timer.stop()  # Останавливаем таймер
+        # self.time_left = self.initial_time  # Возвращаем время к начальному
+        # self.update_time_label()  # Обновляем метку времени
+        QCoreApplication.quit()
+        QProcess.startDetached(sys.executable, sys.argv)
+
 
     def update_timer(self):
         """Обновляем оставшееся время каждую секунду."""
         if self.time_left <= 0:
             if self.status == "Подготовка":
-                self.initial_time = 10 * 60
+                self.initial_time = 3 * 60
                 self.time_left = self.initial_time + 3
-                self.status = "Попытка"
+                self.status = "Бой"
                 self.update_time_label()  # Обновляем метку времени
+                sound = AudioSegment.from_file('Обратный отсчёт.mp3', format='mp3')
+                play(sound)
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"

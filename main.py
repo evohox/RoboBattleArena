@@ -30,7 +30,7 @@ def application():
     gpio_handler = GPIOHandler()
 
     # Подключение сигналов
-    gpio_handler.fight_started.connect(window.start_timer)
+    gpio_handler.fight_started.connect(window.refery_handle)
     gpio_handler.fight_stopped.connect(window.pause_timer)
 
     # Инициализация интеграции
