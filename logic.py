@@ -128,7 +128,7 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.update_time_label()  # Обновляем метку времени
                 # sound = AudioSegment.from_file('Timer_sound.mp3', format='mp3')
                 # play(sound)
-                pygame.mixer.init(devicename='default')
+                pygame.mixer.init()
                 pygame.mixer.music.load('Timer_sound.mp3')
                 pygame.mixer.music.play()
             else:
