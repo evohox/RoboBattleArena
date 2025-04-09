@@ -69,6 +69,7 @@ class Window(QMainWindow, Ui_MainWindow):
 
     def refery_handle(self):
         self.start_timer()
+        print(self.status, self.state)
         if self.status == "Подготовка" and self.state == "Ongoing":
             self.time_left = 0
 
