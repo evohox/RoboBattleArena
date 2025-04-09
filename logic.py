@@ -68,7 +68,8 @@ class Window(QMainWindow, Ui_MainWindow):
             self.update_time_label()
 
     def refery_handle(self):
-        if self.status == "Подготовка":
+        self.start_timer()
+        if self.status == "Подготовка" and self.state == "Ongoing":
             self.time_left = 0
 
     def open_settings_dialog(self):
@@ -124,7 +125,7 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.time_left = self.initial_time + 3
                 self.status = "Бой"
                 self.update_time_label()  # Обновляем метку времени
-                sound = AudioSegment.from_file('Обратный отсчёт.mp3', format='mp3')
+                sound = AudioSegment.from_file('Timer_sound.mp3', format='mp3')
                 play(sound)
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
