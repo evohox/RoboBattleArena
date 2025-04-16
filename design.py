@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QTimer, Qt
+from settings import SettingsDialog
 
 
 class Ui_MainWindow(object):
@@ -138,27 +139,17 @@ class Ui_MainWindow(object):
         self.timer.timeout.connect(self.update_timer)
 
     def get_team_names_and_time(self):
-        """Запрашивает у пользователя количество команд и их названия"""
-        team_count, ok = QInputDialog.getInt(None, "Количество команд", "Введите количество команд (1 или 2):", 2, 1, 2)
+        """Использует диалог настроек для получения параметров"""
+        dialog = SettingsDialog(self)
+        if dialog.exec_():
+            return dialog.get_settings()
+        return ["Красные", "Синие"], 3  # Значения по умолчанию
 
-        if ok:
-            team_names = []
-            for i in range(team_count):
-                name, ok = QInputDialog.getText(None, f"Название команды {i + 1}", f"Введите название команды {i + 1}:")
-                team_names.append(name if ok and name else f"Команда {i + 1}")
-
-            time_options = ["3 минуты", "7 минут", "0 Минут"]
-            time_index, ok = QInputDialog.getItem(None, "Время подготовки", "Выберите время подготовки:", time_options)
-            if time_index == "3 минуты":
-                preparation_time = 3
-            elif time_index == "7 минут":
-                preparation_time = 7
-            else:
-                preparation_time = 0
-
-            return team_names, preparation_time
-
-        return ["Красные", "Синие"], 3
+    def show_settings_dialog(self):
+        dialog = SettingsDialog(self)
+        if dialog.exec_():
+            self.team_names, self.preparation_time = dialog.get_settings()
+            self.apply_settings()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

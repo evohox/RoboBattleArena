@@ -1,92 +1,60 @@
+# settings_dialog.py
 from PyQt5.QtWidgets import (
-    QDialog,
-    QVBoxLayout,
-    QLineEdit,
-    QPushButton,
-    QFormLayout,
-    QSpinBox,
-    QLabel,
-    QGroupBox,
-    QWidget,
+    QDialog, QVBoxLayout, QFormLayout, QLineEdit,
+    QComboBox, QPushButton, QLabel, QSpinBox
 )
-from PyQt5.QtCore import Qt
-
 
 class SettingsDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.setWindowTitle("Настройки игры")
+        self.setup_ui()
 
-        self.setWindowTitle("Настройки приложения")
-        self.setFixedSize(500, 400)  # Оптимальный размер для всех настроек
+    def setup_ui(self):
+        layout = QVBoxLayout(self)
 
-        # Основной layout
-        main_layout = QVBoxLayout(self)
-        main_layout.setAlignment(Qt.AlignTop)  # Выравнивание по верху
+        # Настройки команд
+        team_group = QLabel("Настройки команд")
+        layout.addWidget(team_group)
 
-        # Группа "Настройки команд"
-        teams_group = QWidget("Настройки команд")
-        teams_layout = QFormLayout()
+        self.team_count_combo = QComboBox()
+        self.team_count_combo.addItems(["1 команда", "2 команды"])
+        layout.addWidget(QLabel("Количество команд:"))
+        layout.addWidget(self.team_count_combo)
 
-        self.team1_edit = QLineEdit()
-        if parent and hasattr(parent, 'team1_label'):
-            self.team1_edit.setText(parent.team1_label.text())
-        teams_layout.addRow("Команда 1:", self.team1_edit)
+        self.team1_edit = QLineEdit("Команда 1")
+        self.team2_edit = QLineEdit("Команда 2")
+        layout.addWidget(QLabel("Название команды 1:"))
+        layout.addWidget(self.team1_edit)
+        layout.addWidget(QLabel("Название команды 2:"))
+        layout.addWidget(self.team2_edit)
 
-        self.team2_edit = QLineEdit()
-        if parent and hasattr(parent, 'team2_label'):
-            self.team2_edit.setText(parent.team2_label.text())
-        teams_layout.addRow("Команда 2:", self.team2_edit)
+        # Настройки времени
+        time_group = QLabel("Настройки времени")
+        layout.addWidget(time_group)
 
-        teams_group.setLayout(teams_layout)
-        main_layout.addWidget(teams_group)
+        self.time_combo = QComboBox()
+        self.time_combo.addItems(["3 минуты", "7 минут", "0 минут"])
+        layout.addWidget(QLabel("Время подготовки:"))
+        layout.addWidget(self.time_combo)
 
-        # Группа "Настройки времени"
-        time_group = QWidget("Настройки времени")
-        time_layout = QFormLayout()
+        # Кнопки
+        self.save_btn = QPushButton("Сохранить")
+        self.save_btn.clicked.connect(self.accept)
+        layout.addWidget(self.save_btn)
 
-        self.minutes_edit = QSpinBox()
-        self.minutes_edit.setRange(0, 59)
-        if parent and hasattr(parent, 'initial_time'):
-            self.minutes_edit.setValue(parent.initial_time // 60)
-        time_layout.addRow("Минуты:", self.minutes_edit)
+    def get_settings(self):
+        """Возвращает настройки в виде кортежа (team_names, preparation_time)"""
+        team_count = 1 if self.team_count_combo.currentText() == "1 команда" else 2
+        team_names = [self.team1_edit.text()]
+        if team_count == 2:
+            team_names.append(self.team2_edit.text())
 
-        self.seconds_edit = QSpinBox()
-        self.seconds_edit.setRange(0, 59)
-        if parent and hasattr(parent, 'initial_time'):
-            self.seconds_edit.setValue(parent.initial_time % 60)
-        time_layout.addRow("Секунды:", self.seconds_edit)
+        time_mapping = {
+            "3 минуты": 3,
+            "7 минут": 7,
+            "0 минут": 0
+        }
+        preparation_time = time_mapping[self.time_combo.currentText()]
 
-        time_group.setLayout(time_layout)
-        main_layout.addWidget(time_group)
-
-        # Кнопки управления
-        btn_layout = QVBoxLayout()
-        btn_layout.setSpacing(10)
-
-        self.save_btn = QPushButton("Сохранить все настройки")
-        self.save_btn.clicked.connect(self.save_settings)
-        btn_layout.addWidget(self.save_btn)
-
-        self.cancel_btn = QPushButton("Отмена")
-        self.cancel_btn.clicked.connect(self.reject)
-        btn_layout.addWidget(self.cancel_btn)
-
-        main_layout.addLayout(btn_layout)
-
-    def save_settings(self):
-        """Сохраняет все настройки"""
-        parent = self.parent()
-        if parent:
-            # Сохраняем названия команд
-            if hasattr(parent, 'team1_label'):
-                parent.team1_label.setText(self.team1_edit.text())
-            if hasattr(parent, 'team2_label'):
-                parent.team2_label.setText(self.team2_edit.text())
-
-            # Сохраняем время
-            if hasattr(parent, 'initial_time'):
-                parent.initial_time = self.minutes_edit.value() * 60 + self.seconds_edit.value()
-
-            # Здесь можно добавить сохранение других параметров
-
-        self.accept()  # Закрываем окно с результатом Accepted
+        return team_names, preparation_time
