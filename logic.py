@@ -50,8 +50,6 @@ class Window(QMainWindow, Ui_MainWindow):
             self.reset_timer()
         elif event.key() == Qt.Key_Escape:
             QApplication.quit()
-        elif event.key() == Qt.Key_S:
-            self.open_settings_dialog()
         elif event.key() == Qt.Key_Left:
             if self.time_left + 5 >= self.initial_time:
                 self.time_left = self.initial_time
@@ -71,11 +69,6 @@ class Window(QMainWindow, Ui_MainWindow):
         if self.status == "Подготовка" and self.state == "Ongoing":
             self.time_left = 0
         self.start_timer()
-
-    def open_settings_dialog(self):
-        """Открываем диалог настроек."""
-        dialog = SettingsDialog(self)
-        dialog.exec_()
 
     def toggle_timer(self):
         """Запускаем или ставим на паузу таймер в зависимости от состояния."""
