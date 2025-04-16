@@ -6,7 +6,8 @@ from PyQt5.QtWidgets import (
     QFormLayout,
     QSpinBox,
     QLabel,
-    QGroupBox
+    QGroupBox,
+    QWidget,
 )
 from PyQt5.QtCore import Qt
 
@@ -23,7 +24,7 @@ class SettingsDialog(QDialog):
         main_layout.setAlignment(Qt.AlignTop)  # Выравнивание по верху
 
         # Группа "Настройки команд"
-        teams_group = QGroupBox("Настройки команд")
+        teams_group = QWidget("Настройки команд")
         teams_layout = QFormLayout()
 
         self.team1_edit = QLineEdit()
@@ -40,7 +41,7 @@ class SettingsDialog(QDialog):
         main_layout.addWidget(teams_group)
 
         # Группа "Настройки времени"
-        time_group = QGroupBox("Настройки времени")
+        time_group = QWidget("Настройки времени")
         time_layout = QFormLayout()
 
         self.minutes_edit = QSpinBox()
