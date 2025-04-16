@@ -31,12 +31,12 @@ class GPIOHandler(QObject):
         self.team2_ready = False
 
         # Настройка пинов для кнопок
-        self.TEAM1_READY = 13
+        self.TEAM1_READY = 5
         self.TEAM1_STOP = 6
         self.TEAM2_READY = 26
-        self.TEAM2_STOP = 19
-        self.REFEREE_START = 16
-        self.REFEREE_STOP = 5
+        self.TEAM2_STOP = 16
+        self.REFEREE_START = 13
+        self.REFEREE_STOP = 19
 
         # Настройка светодиодной ленты
         self.strip = PixelStrip(
