@@ -13,7 +13,7 @@ class SettingsDialog(QDialog):
         super().__init__(parent)
 
         self.setWindowTitle("Настройки")
-        self.setFixedSize(300, 200)
+        self.setFixedSize(900, 200)
 
         layout = QVBoxLayout(self)
 

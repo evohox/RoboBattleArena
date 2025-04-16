@@ -10,9 +10,9 @@ from PyQt5.QtGui import QFont
 from design import Ui_MainWindow
 from settings import SettingsDialog
 from RpyGPIO import GPIOHandler
-from pydub import AudioSegment
-from pydub.playback import play
-import pygame
+# from pydub import AudioSegment
+# from pydub.playback import play
+# import pygame
 
 class Window(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -95,8 +95,6 @@ class Window(QMainWindow, Ui_MainWindow):
 
     def start_timer(self):
         """Запускаем таймер."""
-        # if self.time_left <= 0:
-        #     return
         self.state = "Ongoing"  # Меняем состояние на "Идет"
         self.timer.start()  # Запускаем таймер
         self.update_time_label()  # Обновляем метку времени
@@ -109,10 +107,6 @@ class Window(QMainWindow, Ui_MainWindow):
 
     def reset_timer(self):
         """Сбрасываем таймер."""
-        # self.state = "Idle"  # Меняем состояние на "Ожидание"
-        # self.timer.stop()  # Останавливаем таймер
-        # self.time_left = self.initial_time  # Возвращаем время к начальному
-        # self.update_time_label()  # Обновляем метку времени
         QCoreApplication.quit()
         QProcess.startDetached(sys.executable, sys.argv)
 
@@ -125,8 +119,8 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.time_left = self.initial_time + 3
                 self.status = "Бой"
                 self.update_time_label()  # Обновляем метку времени
-                sound = AudioSegment.from_file('Timer_sound.mp3', format='mp3')
-                play(sound, device="hw:2,0")
+                # sound = AudioSegment.from_file('Timer_sound.mp3', format='mp3')
+                # play(sound, device="hw:2,0")
                 # pygame.mixer.init()
                 # pygame.mixer.music.load('Timer_sound.mp3')
                 # pygame.mixer.music.play()
