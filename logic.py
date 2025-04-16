@@ -76,15 +76,9 @@ class Window(QMainWindow, Ui_MainWindow):
         """Открываем диалог настроек."""
         dialog = SettingsDialog(self)
         if dialog.exec_() == QDialog.Accepted:
-            # Обновляем названия команд
-            self.team1_label.setText(dialog.team1_edit.text())
-            self.team2_label.setText(dialog.team2_edit.text())
-
-            # Обновляем время в секундах (минуты * 60 + секунды)
             self.initial_time = (
                 dialog.minutes_edit.value() * 60 + dialog.seconds_edit.value()
             )
-            self.reset_timer()  # Сбрасываем таймер после изменения времени
 
     def toggle_timer(self):
         """Запускаем или ставим на паузу таймер в зависимости от состояния."""
