@@ -75,10 +75,7 @@ class Window(QMainWindow, Ui_MainWindow):
     def open_settings_dialog(self):
         """Открываем диалог настроек."""
         dialog = SettingsDialog(self)
-        if dialog.exec_() == QDialog.Accepted:
-            self.initial_time = (
-                dialog.minutes_edit.value() * 60 + dialog.seconds_edit.value()
-            )
+        dialog.exec_()
 
     def toggle_timer(self):
         """Запускаем или ставим на паузу таймер в зависимости от состояния."""
