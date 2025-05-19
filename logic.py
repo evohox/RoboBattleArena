@@ -1,11 +1,10 @@
 import sys
-import asyncio
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
     QDialog,
 )
-from PyQt5.QtCore import Qt, QCoreApplication, QProcess
+from PyQt5.QtCore import Qt, QCoreApplication, QProcess, pyqtSignal
 from PyQt5.QtGui import QFont
 from design import Ui_MainWindow
 from settings import SettingsDialog
@@ -15,6 +14,9 @@ from RpyGPIO import GPIOHandler
 # import pygame
 
 class Window(QMainWindow, Ui_MainWindow):
+    space_btn = pyqtSignal()
+    esc_btn = pyqtSignal()
+    
     def __init__(self):
         super().__init__()  # Инициализируем родительский класс
         self.setupUi(self)  # Настраиваем интерфейс
@@ -46,10 +48,12 @@ class Window(QMainWindow, Ui_MainWindow):
         """Обрабатываем нажатия клавиш."""
         if event.key() == Qt.Key_Space:
             self.toggle_timer()
+            self.space_btn.emit()
         elif event.key() in (Qt.Key_R, Qt.Key_K):
             self.reset_timer()
         elif event.key() == Qt.Key_Escape:
             QApplication.quit()
+            self.esc_btn.emit()
         elif event.key() == Qt.Key_Left:
             if self.time_left + 5 >= self.initial_time:
                 self.time_left = self.initial_time
