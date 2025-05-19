@@ -18,7 +18,6 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("Arena")
         MainWindow.setWindowFlags(Qt.FramelessWindowHint)
         MainWindow.showFullScreen()
-        MainWindow.installEventFilter(self)
 
         # Главный контейнер (фон)
         self.central_widget = QWidget(MainWindow)
@@ -155,35 +154,3 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Arena"))
-
-    def eventFilter(self, obj, event):
-        if event.type() == QtCore.QEvent.Resize:
-            self.adjust_font_sizes()
-        return self.eventFilter(obj, event)
-
-    def adjust_font_sizes(self):
-        labels = [self.team1_label]
-        if hasattr(self, 'team2_label'):
-            labels.append(self.team2_label)
-        for label in labels:
-            self.scale_font_to_label(label)
-
-    def scale_font_to_label(self, label):
-        if not label.text():
-            return
-        font = label.font()
-        font_size = 1
-        label_width = label.width()
-        label_height = label.height()
-
-        test_font = QtGui.QFont(font)
-        while True:
-            test_font.setPointSize(font_size)
-            fm = QtGui.QFontMetrics(test_font)
-            rect = fm.boundingRect(label.text())
-            if rect.width() > label_width or rect.height() > label_height:
-                break
-            font_size += 1
-
-        font.setPointSize(max(1, font_size - 1))
-        label.setFont(font)
