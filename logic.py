@@ -69,6 +69,11 @@ class Window(QMainWindow, Ui_MainWindow):
             self.time_left = 0
         self.start_timer()
 
+    def surrender(self):
+        self.time_left = 0
+        self.pause_timer()
+        self.update_time_label()
+
     def toggle_timer(self):
         """Запускаем или ставим на паузу таймер в зависимости от состояния."""
         if self.state == "Ongoing":
