@@ -18,7 +18,6 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("Arena")
         MainWindow.setWindowFlags(Qt.FramelessWindowHint)
         MainWindow.showFullScreen()
-
         MainWindow.installEventFilter(self)
 
         # Главный контейнер (фон)
@@ -160,7 +159,7 @@ class Ui_MainWindow(object):
     def eventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.Resize:
             self.adjust_font_sizes()
-        return super().eventFilter(obj, event)
+        return self.eventFilter(obj, event)
 
     def adjust_font_sizes(self):
         labels = [self.team1_label]
