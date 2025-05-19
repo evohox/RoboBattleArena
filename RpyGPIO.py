@@ -34,6 +34,8 @@ class GPIOHandler(QObject):
         self.STATE_WAITING = 0
         self.STATE_READY = 1
         self.STATE_FIGHT = 2
+        self.PREPARING = 3
+
 
         super().__init__()
         self.current_state = self.STATE_WAITING
@@ -104,7 +106,7 @@ class GPIOHandler(QObject):
     def handle_button_press(self, button):
         """Обработка нажатия кнопки"""
         print(button)
-        if button == self.TEAM1_READY and self.current_state == self.STATE_WAITING and not self.team1_ready:
+        if button == self.TEAM1_READY and self.current_state == self.PREPARING and not self.team1_ready:
             self.team1_ready = True
             self.fade_to_color(Color(0, 255, 0), team=1)  # Зеленый
             if self.team2_ready:
@@ -113,7 +115,7 @@ class GPIOHandler(QObject):
             # print(result)
             # result = self.tournament.reload_page("https://grmvzdlx-3008.euw.devtunnels.ms")
             # print(result)
-        elif button == self.TEAM2_READY and self.current_state == self.STATE_WAITING and not self.team2_ready:
+        elif button == self.TEAM2_READY and self.current_state == self.PREPARING and not self.team2_ready:
             self.team2_ready = True
             self.fade_to_color(Color(0, 255, 0), team=2)  # Зеленый
             if self.team1_ready:
@@ -124,6 +126,7 @@ class GPIOHandler(QObject):
             # print(result)
         elif button == self.REFEREE_START and self.current_state != self.STATE_FIGHT:
             if self.current_state == self.STATE_WAITING:
+                self.current_state = self.PREPARING
                 self.fight_started.emit()
             else:
                 self.current_state = self.STATE_FIGHT
@@ -140,6 +143,7 @@ class GPIOHandler(QObject):
             # print(result)
             # result = self.tournament.reload_page("https://grmvzdlx-3008.euw.devtunnels.ms")
             # print(result)
+
 
     def space_handler(self):
         if self.current_state == self.STATE_FIGHT:

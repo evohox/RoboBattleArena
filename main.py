@@ -16,7 +16,7 @@ def application():
 
     # Подключение сигналов (предполагается, что это pyqtSignal)
     gpio_handler.fight_started.connect(window.refery_handle)
-    gpio_handler.fight_stopped.connect(window.pause_timer)
+    gpio_handler.fight_stopped.connect(window.surrender)
     window.space_btn.connect(gpio_handler.space_handler)
     window.esc_btn.connect(gpio_handler.stop)
 

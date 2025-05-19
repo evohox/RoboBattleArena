@@ -47,8 +47,8 @@ class Window(QMainWindow, Ui_MainWindow):
         elif event.key() in (Qt.Key_R, Qt.Key_K):
             self.reset_timer()
         elif event.key() == Qt.Key_Escape:
-            QApplication.quit()
             self.esc_btn.emit()
+            QApplication.quit()
         elif event.key() == Qt.Key_Left:
             if self.time_left + 5 >= self.initial_time:
                 self.time_left = self.initial_time
@@ -71,7 +71,6 @@ class Window(QMainWindow, Ui_MainWindow):
 
     def surrender(self):
         self.time_left = 0
-        self.pause_timer()
         self.update_time_label()
 
     def toggle_timer(self):
