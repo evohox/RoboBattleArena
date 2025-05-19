@@ -70,7 +70,12 @@ class Window(QMainWindow, Ui_MainWindow):
         self.start_timer()
 
     def surrender(self):
-        self.time_left = 0
+        if self.status == "Подготовка":
+            self.status = "Бой"
+            self.state = "End"
+            self.time_left = 0
+        elif self.status == "Бой":
+            self.time_left = 0
         self.update_time_label()
 
     def toggle_timer(self):
