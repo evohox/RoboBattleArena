@@ -84,11 +84,10 @@ class GPIOHandler(QObject):
         print("Starting!")
         try:
         # Инициализация - синий цвет
-            self.set_color(Color(0, 0, 255))
-
             while True:
                 # Проверка всех кнопок
                 for button in self.buttons:
+                    self.set_color(Color(0, 0, 255))
                     if GPIO.input(button) == GPIO.HIGH:
                         # self.handle_button_press(button)
                         threading.Thread(target=self.handle_button_press, args=(button, )).start()
