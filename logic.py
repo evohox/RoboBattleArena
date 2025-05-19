@@ -16,7 +16,7 @@ from RpyGPIO import GPIOHandler
 class Window(QMainWindow, Ui_MainWindow):
     space_btn = pyqtSignal()
     esc_btn = pyqtSignal()
-    
+
     def __init__(self):
         super().__init__()  # Инициализируем родительский класс
         self.setupUi(self)  # Настраиваем интерфейс
@@ -35,11 +35,6 @@ class Window(QMainWindow, Ui_MainWindow):
         self.set_preparation_time(self.preparation_time)
 
         self.update_time_label()  # Обновляем метку времени
-
-    async def run_loop(self):
-        """Асинхронный цикл для интеграции с asyncio."""
-        while True:
-            await asyncio.sleep(0.001)  # Небольшая задержка, чтобы не нагружать CPU
 
     def set_preparation_time(self, minutes):
         return minutes * 60

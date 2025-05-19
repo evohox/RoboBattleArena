@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import os
 from Tournament import Tournament
 
-load_dotenv() 
+load_dotenv()
 login=os.getenv("login")
 password=os.getenv("password")
 api_url=os.getenv("api_url")
@@ -45,7 +45,7 @@ class GPIOHandler(QObject):
         self.team2_stop_event = threading.Event()
         self.referee_start_event = threading.Event()
         self.referee_stop_event = threading.Event()
-        
+
 
         # Настройка пинов для кнопок
         self.TEAM1_READY = 5
@@ -92,7 +92,7 @@ class GPIOHandler(QObject):
                         threading.Thread(target=self.handle_button_press, args=(button, )).start()
                         time.sleep(0.1)  # Задержка для антидребезга
                         print(self.current_state, self.team1_ready, self.team2_ready, button)
-                        
+
 
                 time.sleep(0.05)
 
@@ -140,8 +140,7 @@ class GPIOHandler(QObject):
             # print(result)
             # result = self.tournament.reload_page("https://grmvzdlx-3008.euw.devtunnels.ms")
             # print(result)
-    
-    
+
     def space_handler(self):
         if self.current_state == self.STATE_FIGHT:
             self.current_state = self.STATE_WAITING
@@ -151,8 +150,8 @@ class GPIOHandler(QObject):
         elif self.current_state == self.STATE_WAITING:
             self.current_state = self.STATE_FIGHT
             self.fade_to_color(Color(255, 0, 0), team=0, duration=2)
-            
-            
+
+
     def set_color(self, color, team=0):
         """Установка цвета всей ленты"""
         if team == 1:
@@ -172,7 +171,7 @@ class GPIOHandler(QObject):
         """Плавный переход к указанному цвету"""
         steps = 100
         delay = duration / steps
-        
+
         if team==2:
             current_color = self.strip.getPixelColor(0)
         else:
@@ -196,9 +195,9 @@ class GPIOHandler(QObject):
 
     def blink(self, target_color, team=0, duration=2.0):
         """Мигание цветом"""
-        
+
         current_color = self.strip.getPixelColor(0)
-        
+
         self.fade_to_color(target_color, team=team, duration=duration/2)
         self.fade_to_color(current_color, team=team, duration=duration/2)
 
@@ -221,5 +220,3 @@ def main():
 
 if __name__ == "__main__":
   main()
-
-
