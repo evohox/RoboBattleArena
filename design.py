@@ -66,7 +66,7 @@ class Ui_MainWindow(object):
             }
             """
         )
-        self.team1_frame.setFixedSize(400, 150)
+        self.team1_frame.setFixedSize(500, 200)
         central_layout.addWidget(self.team1_frame, alignment=Qt.AlignCenter)
 
         team1_layout = QVBoxLayout(self.team1_frame)
@@ -120,7 +120,7 @@ class Ui_MainWindow(object):
                 }
                 """
             )
-            self.team2_frame.setFixedSize(400, 150)
+            self.team2_frame.setFixedSize(500, 200)
             central_layout.addWidget(self.team2_frame, alignment=Qt.AlignCenter)
 
             team2_layout = QVBoxLayout(self.team2_frame)

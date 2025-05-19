@@ -1,18 +1,20 @@
 import sys
+import threading
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import QTimer
 from logic import Window
 from RpyGPIO import GPIOHandler
-import threading
 
 
 def application():
     app = QApplication(sys.argv)
     window = Window()
     gpio_handler = GPIOHandler()
-    gpio_thread = threading.Thread(target=gpio_handler.run_loop, daemon=True).start()
-    
-    # Подключение сигналов
+
+    # Запуск GPIO потока
+    gpio_thread = threading.Thread(target=gpio_handler.run_loop, daemon=True)
+    gpio_thread.start()
+
+    # Подключение сигналов (предполагается, что это pyqtSignal)
     gpio_handler.fight_started.connect(window.refery_handle)
     gpio_handler.fight_stopped.connect(window.pause_timer)
     window.space_btn.connect(gpio_handler.space_handler)
@@ -20,7 +22,10 @@ def application():
 
     window.show()
 
-    sys.exit(app.exec_())
+    try:
+        sys.exit(app.exec_())
+    except Exception as e:
+        print(f"Application exited with error: {e}")
 
 if __name__ == "__main__":
     application()
