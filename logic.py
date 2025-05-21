@@ -11,10 +11,6 @@ from RpyGPIO import GPIOHandler
 # from pydub import AudioSegment
 # from pydub.playback import play
 import subprocess
-import os
-os.environ["SDL_AUDIODRIVER"] = "alsa"
-os.environ["SDL_ALSA_DEVICE"] = "hw:0,0"
-import pygame
 
 class Window(QMainWindow, Ui_MainWindow):
     space_btn = pyqtSignal()
@@ -119,7 +115,7 @@ class Window(QMainWindow, Ui_MainWindow):
                 # pygame.mixer.music.load('fixed_sound.wav')
                 # pygame.mixer.music.play()
                 # self.sound.play()
-                subprocess.run("aplay fixed_timer.wav", shell=True)
+                subprocess.run("aplay fixed_sound.wav", shell=True)
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
