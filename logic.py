@@ -2,12 +2,11 @@ import sys
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
-    QDialog,
 )
 from PyQt5.QtCore import Qt, QCoreApplication, QProcess, pyqtSignal
 from PyQt5.QtGui import QFont
+from PyQt5.QtMultimedia import QSound
 from design import Ui_MainWindow
-from settings import SettingsDialog
 from RpyGPIO import GPIOHandler
 # from pydub import AudioSegment
 # from pydub.playback import play
@@ -29,6 +28,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.time_left = self.initial_time  # Оставшееся время
         self.state = "Idle"  # Начальное состояние таймера
         self.status = "Подготовка"
+        self.sound = QSound("Timer_sound.waw")
 
 
         # Устанавливаем время подготовки
@@ -116,6 +116,7 @@ class Window(QMainWindow, Ui_MainWindow):
                 # pygame.mixer.init()
                 # pygame.mixer.music.load('Timer_sound.mp3')
                 # pygame.mixer.music.play()
+                self.sound.play()
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
