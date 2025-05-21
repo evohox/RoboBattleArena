@@ -10,7 +10,7 @@ from design import Ui_MainWindow
 from RpyGPIO import GPIOHandler
 # from pydub import AudioSegment
 # from pydub.playback import play
-# import pygame
+import pygame
 
 class Window(QMainWindow, Ui_MainWindow):
     space_btn = pyqtSignal()
@@ -113,9 +113,9 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.update_time_label()  # Обновляем метку времени
                 # sound = AudioSegment.from_file('Timer_sound.mp3', format='mp3')
                 # play(sound, device="hw:2,0")
-                # pygame.mixer.init()
-                # pygame.mixer.music.load('Timer_sound.mp3')
-                # pygame.mixer.music.play()
+                pygame.mixer.init()
+                pygame.mixer.music.load('fixed_sound.wav')
+                pygame.mixer.music.play()
                 self.sound.play()
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
