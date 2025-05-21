@@ -115,7 +115,7 @@ class Window(QMainWindow, Ui_MainWindow):
                 # pygame.mixer.music.load('fixed_sound.wav')
                 # pygame.mixer.music.play()
                 # self.sound.play()
-                subprocess.run("aplay fixed_sound.wav", shell=True)
+                subprocess.run("aplay fixed_sound.wav")
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
