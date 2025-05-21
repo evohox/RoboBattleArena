@@ -10,6 +10,7 @@ from design import Ui_MainWindow
 from RpyGPIO import GPIOHandler
 # from pydub import AudioSegment
 # from pydub.playback import play
+import subprocess
 import os
 os.environ["SDL_AUDIODRIVER"] = "alsa"
 os.environ["SDL_ALSA_DEVICE"] = "hw:0,0"
@@ -114,10 +115,11 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.time_left = self.initial_time + 3
                 self.status = "Бой"
                 self.update_time_label()  # Обновляем метку времени
-                pygame.mixer.init()
-                pygame.mixer.music.load('fixed_sound.wav')
-                pygame.mixer.music.play()
+                # pygame.mixer.init()
+                # pygame.mixer.music.load('fixed_sound.wav')
+                # pygame.mixer.music.play()
                 # self.sound.play()
+                subprocess.run("aplay fixed_timer.wav", shell=True)
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
