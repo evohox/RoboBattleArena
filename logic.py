@@ -10,6 +10,9 @@ from design import Ui_MainWindow
 from RpyGPIO import GPIOHandler
 # from pydub import AudioSegment
 # from pydub.playback import play
+import os
+os.environ["SDL_AUDIODRIVER"] = "alsa"
+os.environ["SDL_ALSA_DEVICE"] = "hw:0,0"
 import pygame
 
 class Window(QMainWindow, Ui_MainWindow):
