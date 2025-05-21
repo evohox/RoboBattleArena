@@ -28,7 +28,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.time_left = self.initial_time  # Оставшееся время
         self.state = "Idle"  # Начальное состояние таймера
         self.status = "Подготовка"
-        self.sound = QSound("Timer_sound.wav")
+        self.sound = QSound("fixed_sound.wav")
 
 
         # Устанавливаем время подготовки
