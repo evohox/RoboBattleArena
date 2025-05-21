@@ -113,7 +113,7 @@ class Window(QMainWindow, Ui_MainWindow):
                 # pygame.mixer.init()
                 # pygame.mixer.music.load('/home/admin/project/RoboBattleArena/fixed_sound.wav')
                 # pygame.mixer.music.play()
-                subprocess.run("/home/admin/project/RoboBattleArena/fixed_sound.wav", shell=True)
+                subprocess.run("sudo aplay /home/admin/project/RoboBattleArena/fixed_sound.wav", shell=True)
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
