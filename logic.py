@@ -8,9 +8,8 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtMultimedia import QSound
 from design import Ui_MainWindow
 from RpyGPIO import GPIOHandler
-# from pydub import AudioSegment
-# from pydub.playback import play
 import subprocess
+import pygame
 
 class Window(QMainWindow, Ui_MainWindow):
     space_btn = pyqtSignal()
@@ -112,10 +111,9 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.status = "Бой"
                 self.update_time_label()  # Обновляем метку времени
                 # pygame.mixer.init()
-                # pygame.mixer.music.load('fixed_sound.wav')
+                # pygame.mixer.music.load('/home/admin/project/RoboBattleArena/fixed_sound.wav')
                 # pygame.mixer.music.play()
-                # self.sound.play()
-                subprocess.run("aplay fixed_sound.wav", shell=True)
+                subprocess.run("/home/admin/project/RoboBattleArena/fixed_sound.wav", shell=True)
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
