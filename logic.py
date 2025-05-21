@@ -28,7 +28,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.time_left = self.initial_time  # Оставшееся время
         self.state = "Idle"  # Начальное состояние таймера
         self.status = "Подготовка"
-        self.sound = QSound("fixed_sound.wav")
+        # self.sound = QSound("fixed_sound.wav")
 
 
         # Устанавливаем время подготовки
@@ -111,12 +111,10 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.time_left = self.initial_time + 3
                 self.status = "Бой"
                 self.update_time_label()  # Обновляем метку времени
-                # sound = AudioSegment.from_file('Timer_sound.mp3', format='mp3')
-                # play(sound, device="hw:2,0")
                 pygame.mixer.init()
                 pygame.mixer.music.load('fixed_sound.wav')
                 pygame.mixer.music.play()
-                self.sound.play()
+                # self.sound.play()
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
