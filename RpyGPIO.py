@@ -125,6 +125,9 @@ class GPIOHandler(QObject):
             self.reset_to_waiting()
             self.tournament.send_fight_end()
 
+    def end_prepare(self):
+        self.current_state = self.STATE_FIGHT
+        self.set_color(Color(255, 0, 0))
 
     def space_handler(self):
         if self.current_state == self.STATE_FIGHT:

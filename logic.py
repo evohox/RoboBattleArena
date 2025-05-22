@@ -12,6 +12,7 @@ import os
 class Window(QMainWindow, Ui_MainWindow):
     space_btn = pyqtSignal()
     esc_btn = pyqtSignal()
+    prepare_end = pyqtSignal()
 
     def __init__(self):
         super().__init__()  # Инициализируем родительский класс
@@ -108,6 +109,7 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.initial_time = 3 * 60
                 self.time_left = self.initial_time + 3
                 self.status = "Бой"
+                self.prepare_end.emit()
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"

@@ -19,6 +19,7 @@ def application():
     gpio_handler.fight_stopped.connect(window.surrender)
     window.space_btn.connect(gpio_handler.space_handler)
     window.esc_btn.connect(gpio_handler.stop)
+    window.preparation_time.connect()
 
     window.show()
 
