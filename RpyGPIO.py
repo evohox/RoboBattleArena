@@ -138,6 +138,9 @@ class GPIOHandler(QObject):
         elif self.current_state == self.PREPARING:
             self.current_state = self.STATE_WAITING
             self.set_color(Color(0, 0, 255)) # Синий
+        elif self.current_state == self.STATE_WAITING:
+            self.current_state == self.PREPARING
+            self.set_color(Color(0, 0, 255))
 
     def set_color(self, color, team=0):
         """Установка цвета всей ленты"""
