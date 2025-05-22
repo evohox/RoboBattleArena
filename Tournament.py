@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 class Tournament:
     def __init__(self, api_url):
         self.api_url = api_url
-        self.sio = socketio.сlient()
+        self.sio = socketio.Client()
         self.is_connected = False
 
         # Регистрация обработчиков событий
