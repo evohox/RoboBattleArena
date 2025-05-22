@@ -5,11 +5,8 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt, QCoreApplication, QProcess, pyqtSignal
 from PyQt5.QtGui import QFont
-from PyQt5.QtMultimedia import QSound
 from design import Ui_MainWindow
 from RpyGPIO import GPIOHandler
-import subprocess
-import pygame
 
 class Window(QMainWindow, Ui_MainWindow):
     space_btn = pyqtSignal()
@@ -109,11 +106,6 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.initial_time = 3 * 60
                 self.time_left = self.initial_time + 3
                 self.status = "Бой"
-                self.update_time_label()  # Обновляем метку времени
-                # pygame.mixer.init()
-                # pygame.mixer.music.load('/home/admin/project/RoboBattleArena/fixed_sound.wav')
-                # pygame.mixer.music.play()
-                subprocess.run("aplay /home/admin/project/RoboBattleArena/fixed_sound.wav", shell=True)
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
