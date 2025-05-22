@@ -83,8 +83,7 @@ class GPIOHandler(QObject):
                 # Проверка всех кнопок
                 for button in self.buttons:
                     if GPIO.input(button) == GPIO.HIGH:
-                        t = threading.Thread(target=self.handle_button_press, args=(button, ))
-                        t.start()
+                        t = threading.Thread(target=self.handle_button_press, args=(button, )).start()
                         self.threads.append(t)
 
                         time.sleep(0.1)
@@ -137,11 +136,7 @@ class GPIOHandler(QObject):
             self.current_state = self.STATE_WAITING
             self.set_color(Color(0, 0, 255)) # Синий
         elif self.current_state == self.STATE_WAITING:
-            print(11111111111111111111111)
-            self.current_state == self.PREPARING
-            self.set_color(Color(0, 0, 255))
-        else:
-            self.current_state == self.PREPARING
+            self.current_state = self.PREPARING
             self.set_color(Color(0, 0, 255))
 
     def set_color(self, color, team=0):
