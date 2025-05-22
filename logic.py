@@ -8,6 +8,7 @@ from PyQt5.QtGui import QFont
 from design import Ui_MainWindow
 from RpyGPIO import GPIOHandler
 import os
+import time
 
 class Window(QMainWindow, Ui_MainWindow):
     space_btn = pyqtSignal()
@@ -116,7 +117,7 @@ class Window(QMainWindow, Ui_MainWindow):
                     print("Сигнал на воспроизведение отправлен")
                 except Exception as e:
                     print(f"Ошибка отправки: {e}")
-                sys.sleep(3)
+                time.sleep(3)
                 self.prepare_end.emit()
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
