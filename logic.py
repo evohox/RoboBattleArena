@@ -7,6 +7,7 @@ from PyQt5.QtCore import Qt, QCoreApplication, QProcess, pyqtSignal
 from PyQt5.QtGui import QFont
 from design import Ui_MainWindow
 from RpyGPIO import GPIOHandler
+import os
 
 class Window(QMainWindow, Ui_MainWindow):
     space_btn = pyqtSignal()
@@ -41,7 +42,7 @@ class Window(QMainWindow, Ui_MainWindow):
             self.toggle_timer()
             self.space_btn.emit()
         elif event.key() in (Qt.Key_R, Qt.Key_K):
-            self.reset_timer()
+            self.restart_window()
         elif event.key() == Qt.Key_Escape:
             self.esc_btn.emit()
             QApplication.quit()
@@ -93,10 +94,11 @@ class Window(QMainWindow, Ui_MainWindow):
         self.timer.stop()  # Останавливаем таймер
         self.update_time_label()  # Обновляем метку времени
 
-    def reset_timer(self):
-        """Сбрасываем таймер."""
-        QCoreApplication.quit()
-        QProcess.startDetached(sys.executable, sys.argv)
+    def restart_window(self):
+        """Перезапускаем программу."""
+        print("Перезапуск программы...")
+        python = sys.executable
+        os.execv(python, [python] + sys.argv)
 
 
     def update_timer(self):
