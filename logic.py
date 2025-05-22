@@ -109,6 +109,14 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.initial_time = 3 * 60
                 self.time_left = self.initial_time + 3
                 self.status = "Бой"
+                FIFO_PATH = "/tmp/sound_pipe"
+                try:
+                    with open(FIFO_PATH, 'w') as pipe:
+                        pipe.write("play")
+                    print("Сигнал на воспроизведение отправлен")
+                except Exception as e:
+                    print(f"Ошибка отправки: {e}")
+                sys.sleep(3)
                 self.prepare_end.emit()
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
