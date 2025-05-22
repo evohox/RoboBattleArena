@@ -78,9 +78,7 @@ class GPIOHandler(QObject):
         try:
         # Инициализация - синий цвет
             self.set_color(Color(0, 0, 0))
-            # self.set_color(Color(0, 0, 255))
-            threading.Thread(target=self.circle_color, args=(Color(0, 0, 255), Color(0, 255, 0))).start()
-            # self.circle_color(Color(0, 0, 255), Color(255, 0, 0))
+            threading.Thread(target=self.circle_color, args=(Color(0, 0, 255), Color(255, 0, 0))).start()
             while self._running:
                 # Проверка всех кнопок
                 for button in self.buttons:
