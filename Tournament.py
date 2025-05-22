@@ -30,7 +30,7 @@ class Tournament:
             self.is_connected = False
 
         #ID поединка
-        @self.sio.on("BACK-END: Fight ID sent.")ч
+        @self.sio.on("BACK-END: Fight ID sent.")
         def get_fight_id(id):
             self.id = id
             print(f"ID поединка: {id}")
