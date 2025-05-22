@@ -117,6 +117,7 @@ class Window(QMainWindow, Ui_MainWindow):
                     print("Сигнал на воспроизведение отправлен")
                 except Exception as e:
                     print(f"Ошибка отправки: {e}")
+                self.prepare_end.emit()
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
@@ -137,7 +138,6 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.time_label.setFont(QFont("Bebas Neue", 125))
                 # Центрирование текста по горизонтали и вертикали
                 self.time_label.setText('<div style="color:white; ">Старт!</div>')
-                self.prepare_end.emit()
             else:
                 self.time_label.setFont(QFont("Bebas Neue", 145))
                 minutes = self.time_left // 60
