@@ -117,7 +117,6 @@ class Window(QMainWindow, Ui_MainWindow):
                     print("Сигнал на воспроизведение отправлен")
                 except Exception as e:
                     print(f"Ошибка отправки: {e}")
-                time.sleep(3)
                 self.prepare_end.emit()
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
