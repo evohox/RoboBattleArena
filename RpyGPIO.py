@@ -107,12 +107,26 @@ class GPIOHandler(QObject):
             if self.team2_ready:
                 self.current_state = self.STATE_READY
             self.tournament.send_team1_ready()
+            FIFO_PATH = "/tmp/sound_pipe"
+            try:
+                with open(FIFO_PATH, 'w') as pipe:
+                    pipe.write("raedy")
+                print("Сигнал на воспроизведение отправлен")
+            except Exception as e:
+                print(f"Ошибка отправки: {e}")
         elif button == self.TEAM2_READY and self.current_state == self.PREPARING and not self.team2_ready:
             self.team2_ready = True
             self.fade_to_color(Color(0, 255, 0), team=2)  # Зеленый
             if self.team1_ready:
                 self.current_state = self.STATE_READY
             self.tournament.send_team2_ready()
+            FIFO_PATH = "/tmp/sound_pipe"
+            try:
+                with open(FIFO_PATH, 'w') as pipe:
+                    pipe.write("ready")
+                print("Сигнал на воспроизведение отправлен")
+            except Exception as e:
+                print(f"Ошибка отправки: {e}")
         elif button == self.REFEREE_START and self.current_state != self.STATE_FIGHT:
             self.fight_started.emit()
             if self.current_state == self.STATE_WAITING:

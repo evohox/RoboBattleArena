@@ -78,6 +78,16 @@ class Window(QMainWindow, Ui_MainWindow):
         elif self.status == "Бой":
             self.time_left = 0
         self.update_time_label()
+        FIFO_PATH = "/tmp/sound_pipe"
+        try:
+            with open(FIFO_PATH, 'w') as pipe:
+                pipe.write("stop")
+            print("Сигнал на воспроизведение отправлен")
+        except Exception as e:
+            print(f"Ошибка отправки: {e}")
+
+
+
 
     def toggle_timer(self):
         """Запускаем или ставим на паузу таймер в зависимости от состояния."""
@@ -122,7 +132,7 @@ class Window(QMainWindow, Ui_MainWindow):
                 FIFO_PATH = "/tmp/sound_pipe"
                 try:
                     with open(FIFO_PATH, 'w') as pipe:
-                        pipe.write("play")
+                        pipe.write("start")
                     print("Сигнал на воспроизведение отправлен")
                 except Exception as e:
                     print(f"Ошибка отправки: {e}")
