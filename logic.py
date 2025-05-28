@@ -86,9 +86,6 @@ class Window(QMainWindow, Ui_MainWindow):
         except Exception as e:
             print(f"Ошибка отправки: {e}")
 
-
-
-
     def toggle_timer(self):
         """Запускаем или ставим на паузу таймер в зависимости от состояния."""
         if self.state == "Ongoing":
@@ -120,7 +117,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.status = "Подготовка"
         self.initial_time = self.set_preparation_time(self.preparation_time)
         self.time_left = self.initial_time
-        self.update_time_label(self)
+        self.update_time_label()
 
     def update_timer(self):
         """Обновляем оставшееся время каждую секунду."""
