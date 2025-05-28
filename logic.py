@@ -62,6 +62,8 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.time_left -= 5
             self.pause_timer()
             self.update_time_label()
+        elif event.key() == Qt.Key_U:
+            self.update_window(self)
 
     def refery_handle(self):
         if self.status == "Подготовка" and self.state == "Ongoing":
@@ -102,6 +104,13 @@ class Window(QMainWindow, Ui_MainWindow):
         python = sys.executable
         os.execv(python, [python] + sys.argv)
 
+    def update_window(self):
+        """"Обновляет окно выставяя начальное положение"""
+        self.state = "Idle"
+        self.status = "Подготовка"
+        self.initial_time = self.set_preparation_time(self.preparation_time)
+        self.time_left = self.initial_time
+        self.update_time_label(self)
 
     def update_timer(self):
         """Обновляем оставшееся время каждую секунду."""
