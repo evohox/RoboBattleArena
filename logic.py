@@ -63,7 +63,7 @@ class Window(QMainWindow, Ui_MainWindow):
             self.pause_timer()
             self.update_time_label()
         elif event.key() == Qt.Key_U:
-            self.update_window(self)
+            self.update_window()
 
     def refery_handle(self):
         if self.status == "Подготовка" and self.state == "Ongoing":
