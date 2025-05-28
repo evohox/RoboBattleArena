@@ -4,7 +4,7 @@ import time
 import threading
 
 FIFO = "/tmp/sound_pipe"
-START_FILE = "Timer_sound.wav"
+START_FILE = "Start_sound.wav"
 STOP_FILE = "Stop_sound.mp3"
 READY_FILE = "Ready_sound.mp3"
 
