@@ -19,10 +19,6 @@ class Ui_MainWindow(object):
         MainWindow.setWindowFlags(Qt.FramelessWindowHint)
         MainWindow.showFullScreen()
 
-        # Получение имён команд с сервера
-        teams_data = self.get_team_names()
-        self.team1_label.setText(teams_data["team1"])
-        self.team2_label.setText(teams_data["team2"])
 
         self.team_update_timer = QTimer()
         self.team_update_timer.timeout.connect(self.refresh_team_names)
@@ -147,6 +143,10 @@ class Ui_MainWindow(object):
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.update_timer)
 
+        teams_data = self.get_team_names()
+        self.team1_label.setText(teams_data["team1"])
+        self.team2_label.setText(teams_data["team2"])
+
     def refresh_team_names(self):
         names = self.get_team_names()
         self.team1_label.setText(names["team1"])
@@ -169,6 +169,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Arena"))
+
 
     def get_team_names(self):
         try:

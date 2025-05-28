@@ -23,9 +23,6 @@ class Window(QMainWindow, Ui_MainWindow):
         self.team_update_timer.timeout.connect(self.refresh_team_names)
         self.team_update_timer.start(1000)
 
-        # Инициализация GPIOHandler
-        self.gpio_handler = GPIOHandler()
-
         # Инициализация переменных
         self.initial_time = self.set_preparation_time(self.preparation_time)
         self.time_left = self.initial_time  # Оставшееся время
