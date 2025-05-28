@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
 )
-from PyQt5.QtCore import Qt, QCoreApplication, QProcess, pyqtSignal
+from PyQt5.QtCore import Qt, QCoreApplication, QProcess, pyqtSignal, QTimer
 from PyQt5.QtGui import QFont
 from design import Ui_MainWindow
 from RpyGPIO import GPIOHandler
@@ -18,6 +18,10 @@ class Window(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()  # Инициализируем родительский класс
         self.setupUi(self)  # Настраиваем интерфейс
+
+        self.team_update_timer = QTimer()
+        self.team_update_timer.timeout.connect(self.refresh_team_names)
+        self.team_update_timer.start(1000)
 
         # Инициализация GPIOHandler
         self.gpio_handler = GPIOHandler()

@@ -19,6 +19,15 @@ class Ui_MainWindow(object):
         MainWindow.setWindowFlags(Qt.FramelessWindowHint)
         MainWindow.showFullScreen()
 
+        # Получение имён команд с сервера
+        teams_data = self.get_team_names()
+        self.team1_label.setText(teams_data["team1"])
+        self.team2_label.setText(teams_data["team2"])
+
+        self.team_update_timer = QTimer()
+        self.team_update_timer.timeout.connect(self.refresh_team_names)
+        self.team_update_timer.start(1000)
+
         # Главный контейнер (фон)
         self.central_widget = QWidget(MainWindow)
         MainWindow.setCentralWidget(self.central_widget)
@@ -47,8 +56,8 @@ class Ui_MainWindow(object):
         self.ui_layout.setContentsMargins(0, 0, 0, 0)
 
         # Запрашиваем количество команд и их названия
-        self.team_names, self.preparation_time = self.get_team_names_and_time()
-
+        self.team_names = ["Загрузка...", "Загрузка..."]
+        self.preparation_time = 3
         # layout
         central_layout = QHBoxLayout()
         central_layout.setAlignment(Qt.AlignCenter)
@@ -138,19 +147,31 @@ class Ui_MainWindow(object):
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.update_timer)
 
-    def get_team_names_and_time(self):
-        """Использует диалог настроек для получения параметров"""
-        dialog = SettingsDialog(self)
-        if dialog.exec_():
-            return dialog.get_settings()
-        return ["Красные", "Синие"], 3  # Значения по умолчанию
+    def refresh_team_names(self):
+        names = self.get_team_names()
+        self.team1_label.setText(names["team1"])
+        self.team2_label.setText(names["team2"])
 
-    def show_settings_dialog(self):
-        dialog = SettingsDialog(self)
-        if dialog.exec_():
-            self.team_names, self.preparation_time = dialog.get_settings()
-            self.apply_settings()
+    # def get_team_names_and_time(self):
+    #     """Использует диалог настроек для получения параметров"""
+    #     dialog = SettingsDialog(self)
+    #     if dialog.exec_():
+    #         return dialog.get_settings()
+    #     return ["Красные", "Синие"], 3  # Значения по умолчанию
+
+
+    # def show_settings_dialog(self):
+    #     dialog = SettingsDialog(self)
+    #     if dialog.exec_():
+    #         self.team_names, self.preparation_time = dialog.get_settings()
+    #         self.apply_settings()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Arena"))
+
+    def get_team_names(self):
+        try:
+            return self.gpio_handler.tournament.teams_names
+        except AttributeError:
+            return {"team1": "Команда 1", "team2": "Команда 2"}

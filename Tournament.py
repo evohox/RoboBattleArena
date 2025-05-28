@@ -1,8 +1,7 @@
-import requests
-import json
 import socketio
 import os
 from dotenv import load_dotenv
+from typing import Dict, Any
 
 class Tournament:
     def __init__(self, api_url):
@@ -15,6 +14,7 @@ class Tournament:
 
         # Подключение к серверу и авторизация
         self.connect()
+        self.teams_names
 
 
     def register_handlers(self):
@@ -34,6 +34,20 @@ class Tournament:
         def get_fight_id(id):
             self.id = id
             print(f"ID поединка: {id}")
+
+        @self.sio.on("BACK-END: Overlay data sent")
+        def get_team_names(data):
+            try:
+                self.teams_names = process_overlay_data(data)
+            except Exception as e:
+                print("[timer] Ошибка при парсинге времени:", e)
+
+        def process_overlay_data(raw_data: Dict[str, Any]) -> Dict[str, Any]:
+            return {
+                "team1": raw_data.get("team1", "Команда 1"),
+                "team2": raw_data.get("team2", "Команда 2")
+            }
+
 
     def connect(self):
         """Подключается к серверу."""
@@ -73,6 +87,8 @@ class Tournament:
         """Отключается от сервера."""
         if self.is_connected:
             self.sio.disconnect()
+
+
 
 
 # Пример использования

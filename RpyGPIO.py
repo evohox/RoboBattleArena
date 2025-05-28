@@ -110,7 +110,7 @@ class GPIOHandler(QObject):
             FIFO_PATH = "/tmp/sound_pipe"
             try:
                 with open(FIFO_PATH, 'w') as pipe:
-                    pipe.write("raedy")
+                    pipe.write("play")
                 print("Сигнал на воспроизведение отправлен")
             except Exception as e:
                 print(f"Ошибка отправки: {e}")
@@ -123,7 +123,7 @@ class GPIOHandler(QObject):
             FIFO_PATH = "/tmp/sound_pipe"
             try:
                 with open(FIFO_PATH, 'w') as pipe:
-                    pipe.write("ready")
+                    pipe.write("play")
                 print("Сигнал на воспроизведение отправлен")
             except Exception as e:
                 print(f"Ошибка отправки: {e}")
