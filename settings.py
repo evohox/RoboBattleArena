@@ -1,8 +1,15 @@
 # settings_dialog.py
 from PyQt5.QtWidgets import (
-    QDialog, QVBoxLayout, QFormLayout, QLineEdit,
-    QComboBox, QPushButton, QLabel, QSpinBox
+    QDialog,
+    QVBoxLayout,
+    QFormLayout,
+    QLineEdit,
+    QComboBox,
+    QPushButton,
+    QLabel,
+    QSpinBox,
 )
+
 
 class SettingsDialog(QDialog):
     def __init__(self, parent=None):
@@ -50,11 +57,7 @@ class SettingsDialog(QDialog):
         if team_count == 2:
             team_names.append(self.team2_edit.text())
 
-        time_mapping = {
-            "3 минуты": 3,
-            "7 минут": 7,
-            "0 минут": 0
-        }
+        time_mapping = {"3 минуты": 3, "7 минут": 7, "0 минут": 0}
         preparation_time = time_mapping[self.time_combo.currentText()]
 
         return team_names, preparation_time

@@ -20,6 +20,7 @@ def application():
     window.space_btn.connect(gpio_handler.space_handler)
     window.esc_btn.connect(gpio_handler.stop)
     window.prepare_end.connect(gpio_handler.end_prepare)
+    window.update_all.connect(gpio_handler.update_GPIO)
 
     window.show()
 
@@ -27,6 +28,7 @@ def application():
         sys.exit(app.exec_())
     except Exception as e:
         print(f"Application exited with error: {e}")
+
 
 if __name__ == "__main__":
     application()

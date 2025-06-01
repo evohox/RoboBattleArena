@@ -1,35 +1,43 @@
 import sys
+import os
+import time
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
 )
-from PyQt5.QtCore import Qt, QCoreApplication, QProcess, pyqtSignal, QTimer
+from PyQt5.QtCore import Qt, pyqtSignal, QTimer
 from PyQt5.QtGui import QFont
 from design import Ui_MainWindow
-from RpyGPIO import GPIOHandler
-import os
-import time
+from Tournament import Tournament
+from dotenv import load_dotenv
+
+load_dotenv()
+api_url = os.getenv("API_URL")
+
 
 class Window(QMainWindow, Ui_MainWindow):
     space_btn = pyqtSignal()
     esc_btn = pyqtSignal()
     prepare_end = pyqtSignal()
+    update_all = pyqtSignal()
 
     def __init__(self):
         super().__init__()  # Инициализируем родительский класс
         self.setupUi(self)  # Настраиваем интерфейс
 
+        self.tournament = Tournament(api_url=api_url)
+
         self.team_update_timer = QTimer()
         self.team_update_timer.timeout.connect(self.refresh_team_names)
         self.team_update_timer.start(1000)
+
+        self.team_names = self.tournament.get_team_names()
 
         # Инициализация переменных
         self.initial_time = self.set_preparation_time(self.preparation_time)
         self.time_left = self.initial_time  # Оставшееся время
         self.state = "Idle"  # Начальное состояние таймера
         self.status = "Подготовка"
-        # self.sound = QSound("fixed_sound.wav")
-
 
         # Устанавливаем время подготовки
         self.set_preparation_time(self.preparation_time)
@@ -81,7 +89,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.update_time_label()
         FIFO_PATH = "/tmp/sound_pipe"
         try:
-            with open(FIFO_PATH, 'w') as pipe:
+            with open(FIFO_PATH, "w") as pipe:
                 pipe.write("stop")
             print("Сигнал на воспроизведение отправлен")
         except Exception as e:
@@ -113,11 +121,12 @@ class Window(QMainWindow, Ui_MainWindow):
         os.execv(python, [python] + sys.argv)
 
     def update_window(self):
-        """"Обновляет окно выставяя начальное положение"""
+        """ "Обновляет окно выставяя начальное положение"""
         self.state = "Idle"
         self.status = "Подготовка"
         self.initial_time = self.set_preparation_time(self.preparation_time)
         self.time_left = self.initial_time
+        self.get_team_names()
         self.update_time_label()
 
     def update_timer(self):
@@ -129,7 +138,7 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.status = "Бой"
                 FIFO_PATH = "/tmp/sound_pipe"
                 try:
-                    with open(FIFO_PATH, 'w') as pipe:
+                    with open(FIFO_PATH, "w") as pipe:
                         pipe.write("start")
                     print("Сигнал на воспроизведение отправлен")
                 except Exception as e:
@@ -138,7 +147,9 @@ class Window(QMainWindow, Ui_MainWindow):
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
-                self.update_time_label()  # Обновляем метку времени
+                self.update_time_label()  # Обновляем метку таймера
+                time.sleep(30)  # Ждём 30 секунд
+                self.update_window()  # Обновляем окно
         else:
             self.time_left -= 1  # Уменьшаем оставшееся время
             self.update_time_label()  # Обновляем метку времени
@@ -190,3 +201,6 @@ class Window(QMainWindow, Ui_MainWindow):
 
         else:
             raise Exception("Error with state")
+
+    def get_team_names(self):
+        self.team_names = self.tournament.get_team_names()

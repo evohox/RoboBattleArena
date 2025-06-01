@@ -8,7 +8,8 @@ import os
 from Tournament import Tournament
 
 load_dotenv()
-api_url=os.getenv("API_URL")
+api_url = os.getenv("API_URL")
+
 
 class GPIOHandler(QObject):
     # Сигналы для внешних событий
@@ -16,9 +17,7 @@ class GPIOHandler(QObject):
     fight_stopped = pyqtSignal()
 
     def __init__(self):
-        self.tournament = Tournament(
-            api_url=api_url
-        )
+        self.tournament = Tournament(api_url=api_url)
         self.lock = threading.Lock()
         self.threads = []
 
@@ -42,7 +41,6 @@ class GPIOHandler(QObject):
         self.team1_ready = False
         self.team2_ready = False
 
-
         # Настройка пинов для кнопок
         self.TEAM1_READY = 5
         self.TEAM1_STOP = 6
@@ -53,8 +51,13 @@ class GPIOHandler(QObject):
 
         # Настройка светодиодной ленты
         self.strip = PixelStrip(
-            self.LED_COUNT, self.LED_PIN, self.LED_FREQ_HZ,
-            self.LED_DMA, self.LED_INVERT, self.LED_BRIGHTNESS, self.LED_CHANNEL
+            self.LED_COUNT,
+            self.LED_PIN,
+            self.LED_FREQ_HZ,
+            self.LED_DMA,
+            self.LED_INVERT,
+            self.LED_BRIGHTNESS,
+            self.LED_CHANNEL,
         )
         self.strip.begin()
 
@@ -62,9 +65,12 @@ class GPIOHandler(QObject):
         GPIO.setmode(GPIO.BCM)
 
         self.buttons = [
-            self.TEAM1_READY, self.TEAM1_STOP,
-            self.TEAM2_READY, self.TEAM2_STOP,
-            self.REFEREE_START, self.REFEREE_STOP
+            self.TEAM1_READY,
+            self.TEAM1_STOP,
+            self.TEAM2_READY,
+            self.TEAM2_STOP,
+            self.REFEREE_START,
+            self.REFEREE_STOP,
         ]
 
         for button in self.buttons:
@@ -76,21 +82,28 @@ class GPIOHandler(QObject):
         """Основной цикл обработки кнопок"""
         print("Starting!")
         try:
-        # Инициализация - синий цвет
+            # Инициализация - синий цвет
             self.set_color(Color(0, 0, 0))
-            threading.Thread(target=self.circle_color, args=(Color(0, 0, 255), Color(255, 0, 0))).start()
+            threading.Thread(
+                target=self.circle_color, args=(Color(0, 0, 255), Color(255, 0, 0))
+            ).start()
             while self._running:
                 # Проверка всех кнопок
                 for button in self.buttons:
                     if GPIO.input(button) == GPIO.HIGH:
 
-
-                        t = threading.Thread(target=self.handle_button_press, args=(button, )).start()
+                        t = threading.Thread(
+                            target=self.handle_button_press, args=(button,)
+                        ).start()
                         self.threads.append(t)
 
                         time.sleep(0.1)
-                        print(self.current_state, self.team1_ready, self.team2_ready, button)
-
+                        print(
+                            self.current_state,
+                            self.team1_ready,
+                            self.team2_ready,
+                            button,
+                        )
 
                 time.sleep(0.05)
 
@@ -101,7 +114,11 @@ class GPIOHandler(QObject):
     def handle_button_press(self, button):
         """Обработка нажатия кнопки"""
         print(button)
-        if button == self.TEAM1_READY and self.current_state == self.PREPARING and not self.team1_ready:
+        if (
+            button == self.TEAM1_READY
+            and self.current_state == self.PREPARING
+            and not self.team1_ready
+        ):
             self.team1_ready = True
             self.fade_to_color(Color(0, 255, 0), team=1)  # Зеленый
             if self.team2_ready:
@@ -109,12 +126,16 @@ class GPIOHandler(QObject):
             self.tournament.send_team1_ready()
             FIFO_PATH = "/tmp/sound_pipe"
             try:
-                with open(FIFO_PATH, 'w') as pipe:
+                with open(FIFO_PATH, "w") as pipe:
                     pipe.write("play")
                 print("Сигнал на воспроизведение отправлен")
             except Exception as e:
                 print(f"Ошибка отправки: {e}")
-        elif button == self.TEAM2_READY and self.current_state == self.PREPARING and not self.team2_ready:
+        elif (
+            button == self.TEAM2_READY
+            and self.current_state == self.PREPARING
+            and not self.team2_ready
+        ):
             self.team2_ready = True
             self.fade_to_color(Color(0, 255, 0), team=2)  # Зеленый
             if self.team1_ready:
@@ -122,7 +143,7 @@ class GPIOHandler(QObject):
             self.tournament.send_team2_ready()
             FIFO_PATH = "/tmp/sound_pipe"
             try:
-                with open(FIFO_PATH, 'w') as pipe:
+                with open(FIFO_PATH, "w") as pipe:
                     pipe.write("play")
                 print("Сигнал на воспроизведение отправлен")
             except Exception as e:
@@ -136,10 +157,21 @@ class GPIOHandler(QObject):
                 self.current_state = self.STATE_FIGHT
                 self.fade_to_color(Color(255, 0, 0), team=0)  # Красный
                 self.tournament.send_fight_start()
-        elif (button in [self.TEAM1_STOP, self.TEAM2_STOP, self.REFEREE_STOP]) and self.current_state != self.STATE_WAITING:
+        elif (
+            button in [self.TEAM1_STOP, self.TEAM2_STOP, self.REFEREE_STOP]
+        ) and self.current_state != self.STATE_WAITING:
             self.fight_stopped.emit()
             self.reset_to_waiting()
             self.tournament.send_fight_end()
+
+    def update_GPIO(self):
+        self.STATE_WAITING = 0
+        self.STATE_READY = 1
+        self.STATE_FIGHT = 2
+        self.PREPARING = 3
+        self.current_state = self.STATE_WAITING
+        self.team1_ready = False
+        self.team2_ready = False
 
     def end_prepare(self):
         self.current_state = self.STATE_FIGHT
@@ -153,7 +185,7 @@ class GPIOHandler(QObject):
             self.set_color(Color(0, 0, 255))  # Синий
         elif self.current_state == self.PREPARING:
             self.current_state = self.STATE_WAITING
-            self.set_color(Color(0, 0, 255)) # Синий
+            self.set_color(Color(0, 0, 255))  # Синий
         elif self.current_state == self.STATE_WAITING:
             self.current_state = self.PREPARING
             self.set_color(Color(0, 0, 255))
@@ -162,10 +194,10 @@ class GPIOHandler(QObject):
         """Установка цвета всей ленты"""
         with self.lock:
             if team == 1:
-                    for i in range(90, self.strip.numPixels()):
-                        self.strip.setPixelColor(i, color)
+                for i in range(90, self.strip.numPixels()):
+                    self.strip.setPixelColor(i, color)
             elif team == 2:
-                for i in range(self.strip.numPixels()-90):
+                for i in range(self.strip.numPixels() - 90):
                     self.strip.setPixelColor(i, color)
             else:
                 for i in range(self.strip.numPixels()):
@@ -177,17 +209,17 @@ class GPIOHandler(QObject):
         steps = 100
         delay = duration / steps
 
-        if team==2:
+        if team == 2:
             current_color = self.strip.getPixelColor(0)
         else:
             current_color = self.strip.getPixelColor(91)
-        current_r = (current_color >> 16) & 0xff
-        current_g = (current_color >> 8) & 0xff
-        current_b = current_color & 0xff
+        current_r = (current_color >> 16) & 0xFF
+        current_g = (current_color >> 8) & 0xFF
+        current_b = current_color & 0xFF
 
-        target_r = (target_color >> 16) & 0xff
-        target_g = (target_color >> 8) & 0xff
-        target_b = target_color & 0xff
+        target_r = (target_color >> 16) & 0xFF
+        target_g = (target_color >> 8) & 0xFF
+        target_b = target_color & 0xFF
 
         # with self.lock:
         for step in range(steps):
@@ -216,7 +248,9 @@ class GPIOHandler(QObject):
     #         line_id += 1
     #         time.sleep(delay)
 
-    def circle_color(self, first_color: Color, second_color: Color, frequency: int = 100):
+    def circle_color(
+        self, first_color: Color, second_color: Color, frequency: int = 100
+    ):
         """По каждой половине ленты движется полоса шириной 15 пикселей."""
         delay = 1 / frequency
         half = self.LED_COUNT // 2
@@ -241,8 +275,6 @@ class GPIOHandler(QObject):
             line_id1 = (line_id1 + 1) % half
             line_id2 = (line_id2 + 1) % half
             time.sleep(delay)
-
-
 
     def reset_to_waiting(self):
         """Сброс в состояние ожидания"""

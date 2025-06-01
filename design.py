@@ -19,9 +19,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowFlags(Qt.FramelessWindowHint)
         MainWindow.showFullScreen()
 
-
         self.team_update_timer = QTimer()
-        self.team_update_timer.timeout.connect(self.refresh_team_names)
         self.team_update_timer.start(1000)
 
         # Главный контейнер (фон)
@@ -44,7 +42,6 @@ class Ui_MainWindow(object):
 
         # Прозрачный виджет для UI
         self.ui_widget = QWidget(self.central_widget)
-        # self.ui_widget.setAttribute(Qt.WA_TranslucentBackground)
         self.main_layout.addWidget(self.ui_widget)
 
         # Layout для интерфейса
@@ -54,6 +51,7 @@ class Ui_MainWindow(object):
         # Запрашиваем количество команд и их названия
         self.team_names = ["Загрузка...", "Загрузка..."]
         self.preparation_time = 3
+
         # layout
         central_layout = QHBoxLayout()
         central_layout.setAlignment(Qt.AlignCenter)
@@ -83,14 +81,16 @@ class Ui_MainWindow(object):
 
         # Фрейм для таймера
         self.timer_frame = QFrame(self.ui_widget)
-        self.timer_frame.setStyleSheet("""
+        self.timer_frame.setStyleSheet(
+            """
             QFrame {
                 background: qradialgradient(cx:0.5, cy:0.5, radius:1,
                     stop:0 rgba(0, 0, 0, 0.8),
                     stop:1 rgba(0, 0, 0, 0.5));
                 border-radius: 15px;
             }
-        # """)
+        # """
+        )
         self.timer_frame.setMinimumSize(650, 400)
         self.timer_frame.setMaximumSize(900, 500)
 
@@ -109,7 +109,9 @@ class Ui_MainWindow(object):
         self.time_label = QLabel("00:00")
         self.time_label.setFont(QFont("Bebas Neue", 120))
         self.time_label.setAlignment(Qt.AlignCenter)
-        self.time_label.setStyleSheet("color: rgba(255, 255, 255, 1); background: transparent;")
+        self.time_label.setStyleSheet(
+            "color: rgba(255, 255, 255, 1); background: transparent;"
+        )
         timer_frame_layout.addWidget(self.time_label)
 
         # Фрейм для команды 2 (Синие)
@@ -143,36 +145,12 @@ class Ui_MainWindow(object):
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.update_timer)
 
-        teams_data = self.get_team_names()
-        self.team1_label.setText(teams_data["team1"])
-        self.team2_label.setText(teams_data["team2"])
-
-    def refresh_team_names(self):
-        names = self.get_team_names()
-        self.team1_label.setText(names["team1"])
-        self.team2_label.setText(names["team2"])
-
-    # def get_team_names_and_time(self):
-    #     """Использует диалог настроек для получения параметров"""
-    #     dialog = SettingsDialog(self)
-    #     if dialog.exec_():
-    #         return dialog.get_settings()
-    #     return ["Красные", "Синие"], 3  # Значения по умолчанию
-
-
-    # def show_settings_dialog(self):
-    #     dialog = SettingsDialog(self)
-    #     if dialog.exec_():
-    #         self.team_names, self.preparation_time = dialog.get_settings()
-    #         self.apply_settings()
+    def show_settings_dialog(self):
+        dialog = SettingsDialog(self)
+        if dialog.exec_():
+            self.team_names, self.preparation_time = dialog.get_settings()
+            self.apply_settings()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Arena"))
-
-
-    def get_team_names(self):
-        try:
-            return self.gpio_handler.tournament.teams_names
-        except AttributeError:
-            return {"team1": "Команда 1", "team2": "Команда 2"}

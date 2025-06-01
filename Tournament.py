@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from typing import Dict, Any
 
+
 class Tournament:
     def __init__(self, api_url):
         self.api_url = api_url
@@ -14,11 +15,11 @@ class Tournament:
 
         # Подключение к серверу и авторизация
         self.connect()
-        self.teams_names
-
+        self.teams_names = ["", ""]
 
     def register_handlers(self):
         """Регистрирует все обработчики событий."""
+
         @self.sio.event
         def connect():
             print("✅ Подключено к серверу.")
@@ -29,7 +30,7 @@ class Tournament:
             print("❌ Отключено от сервера.")
             self.is_connected = False
 
-        #ID поединка
+        # ID поединка
         @self.sio.on("BACK-END: Fight ID sent.")
         def get_fight_id(id):
             self.id = id
@@ -45,14 +46,13 @@ class Tournament:
         def process_overlay_data(raw_data: Dict[str, Any]) -> Dict[str, Any]:
             return {
                 "team1": raw_data.get("team1", "Команда 1"),
-                "team2": raw_data.get("team2", "Команда 2")
+                "team2": raw_data.get("team2", "Команда 2"),
             }
-
 
     def connect(self):
         """Подключается к серверу."""
         try:
-            self.sio.connect(self.api_url, wait_timeout = 10)
+            self.sio.connect(self.api_url, wait_timeout=10)
             self.is_connected = True
         except Exception as e:
             print(f"⚠️ Не удалось подключиться: {e}")
@@ -83,18 +83,17 @@ class Tournament:
         if self.is_connected:
             self.sio.emit("BUTTONS: Preparing start.", self.id)
 
+    def get_team_names(self):
+        return [self.teams_names["team1"], self.teams_names["team2"]]
+
     def disconnect(self):
         """Отключается от сервера."""
         if self.is_connected:
             self.sio.disconnect()
 
 
-
-
 # Пример использования
 if __name__ == "__main__":
     load_dotenv()
-    api_url=os.getenv("API_URL")
-    tournament = Tournament(
-        api_url=api_url
-    )
+    api_url = os.getenv("API_URL")
+    tournament = Tournament(api_url=api_url)
