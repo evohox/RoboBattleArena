@@ -47,7 +47,7 @@ class Tournament:
                 print("[timer] Ошибка при парсинге:", e)
 
     def process_overlay_data(raw_data: Dict[str, Any]) -> Dict[str, Any]:
-        return [raw_data.get("team1", "Команда 1"), raw_data.get("team2", "Команда 2")]
+        return [raw_data.get("team1"), raw_data.get("team2")]
 
     def connect(self):
         """Подключается к серверу."""
