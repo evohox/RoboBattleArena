@@ -171,6 +171,7 @@ class GPIOHandler(QObject):
         print("Stoping")
         for t in self.threads:
             t.join(timeout=0.1)
+        self.tournament.disconnect()
         self.led.set_color(Color(0, 0, 0))
         self._running = False
         GPIO.cleanup()

@@ -54,6 +54,7 @@ class Window(QMainWindow, Ui_MainWindow):
         elif event.key() in (Qt.Key_R, Qt.Key_K):
             self.restart_window()
         elif event.key() == Qt.Key_Escape:
+            self.tournament.disconnect()
             self.esc_btn.emit()
             QApplication.quit()
         elif event.key() == Qt.Key_Left:
@@ -116,6 +117,7 @@ class Window(QMainWindow, Ui_MainWindow):
     def restart_window(self):
         """Перезапускаем программу."""
         print("Перезапуск программы...")
+        self.tournament.disconnect()
         python = sys.executable
         os.execv(python, [python] + sys.argv)
 
