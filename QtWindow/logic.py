@@ -56,6 +56,7 @@ class Window(QMainWindow, Ui_MainWindow):
     def load_team_names(self):
         while self.state == "Idle":
             team_names = self.tournament.get_team_names()
+            print(self.team_names, team_names)
             if team_names != self.team_names:
                 self.team_names = team_names
                 QTimer.singleShot(0, self.on_team_names_loaded)
@@ -128,7 +129,7 @@ class Window(QMainWindow, Ui_MainWindow):
         if self.state == "Ongoing":
             self.pause_timer()  # Пауза
         else:
-            self.start_timer()  # Запуск
+            self.start_timer()  # Запускs
 
     def start_timer(self):
         """Запускаем таймер."""
