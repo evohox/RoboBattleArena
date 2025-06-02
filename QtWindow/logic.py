@@ -89,6 +89,8 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.time_left += 5
             self.pause_timer()
             self.update_time_label()
+        elif event.key() == Qt.Key_S:
+            self.show_settings_dialog()
         elif event.key() == Qt.Key_Right:
             if self.time_left - 5 <= 0:
                 self.time_left = 0
