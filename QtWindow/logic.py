@@ -34,7 +34,9 @@ class Window(QMainWindow, Ui_MainWindow):
 
         self.team_names = self.tournament.get_team_names()
 
-        while "Загрузка..." in self.team_names:
+        print(self.team_names)
+
+        while self.team_names == ["Загрузка...", "Загрузка..."]:
             print(self.team_names)
             self.get_team_names()
             self.update_time_label()
