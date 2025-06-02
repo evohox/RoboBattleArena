@@ -39,14 +39,14 @@ class Tournament:
         @self.sio.on("BACK-END: Overlay data sent")
         def handle_external_data(data):
             try:
-                self.teams_names = process_overlay_data(data)
+                self.teams_names = self.process_overlay_data(data)
                 print("Названия команд: ", self.teams_names)
 
             except Exception as e:
-                print("[timer] Ошибка при парсинге времени:", e)
+                print("[timer] Ошибка при парсинге:", e)
 
-        def process_overlay_data(raw_data: Dict[str, Any]) -> Dict[str, Any]:
-            return [raw_data.get("team1", "Команда 1"), raw_data.get("team2", "Команда 2")]
+    def process_overlay_data(raw_data: Dict[str, Any]) -> Dict[str, Any]:
+        return [raw_data.get("team1", "Команда 1"), raw_data.get("team2", "Команда 2")]
 
     def connect(self):
         """Подключается к серверу."""
