@@ -157,7 +157,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.status = "Подготовка"
         self.initial_time = self.set_preparation_time(self.preparation_time)
         self.time_left = self.initial_time
-        self.get_team_names()
+        threading.Thread(target=self.load_team_names, daemon=True).start()
         self.update_time_label()
 
     def update_timer(self):
