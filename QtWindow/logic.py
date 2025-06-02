@@ -34,18 +34,19 @@ class Window(QMainWindow, Ui_MainWindow):
 
         self.team_names = self.tournament.get_team_names()
 
-        print(self.team_names)
-
-        while self.team_names == ["", ""]:
-            print(self.team_names)
-            self.get_team_names()
-            self.update_time_label()
 
         # Инициализация переменных
         self.initial_time = self.set_preparation_time(self.preparation_time)
         self.time_left = self.initial_time  # Оставшееся время
         self.state = "Idle"  # Начальное состояние таймера
         self.status = "Подготовка"
+
+        print(self.team_names)
+
+        while self.team_names == ["", ""]:
+            print(self.team_names)
+            self.get_team_names()
+            self.update_time_label()
 
         # Устанавливаем время подготовки
         self.set_preparation_time(self.preparation_time)
