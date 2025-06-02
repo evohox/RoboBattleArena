@@ -28,7 +28,6 @@ class Window(QMainWindow, Ui_MainWindow):
         self.tournament = Tournament(api_url=api_url)
 
         self.team_update_timer = QTimer()
-        self.team_update_timer.timeout.connect(self.refresh_team_names)
         self.team_update_timer.start(1000)
 
         self.team_names = self.tournament.get_team_names()
