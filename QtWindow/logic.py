@@ -1,6 +1,7 @@
 import sys
 import os
 import time
+import threading
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -41,16 +42,30 @@ class Window(QMainWindow, Ui_MainWindow):
         self.state = "Idle"  # Начальное состояние таймера
         self.status = "Подготовка"
 
-        while self.team_names == ["Загрузка...", "Загрузка..."]:
-            print(self.team_names)
-            self.get_team_names()
-            if self.team_names != ["Загрузка...", "Загрузка..."]:
-                print(self.team_names)
+        self.team_names = ["Загрузка...", "Загрузка..."]
+        self.apply_settings()
+        self.update_time_label()
+
+        threading.Thread(target=self.load_team_names, daemon=True).start()
 
         # Устанавливаем время подготовки
         self.set_preparation_time(self.preparation_time)
 
         self.update_time_label()  # Обновляем метку времени
+
+    def load_team_names(self):
+        while True:
+            team_names = self.tournament.get_team_names()
+            if team_names != ["Загрузка...", "Загрузка..."]:
+                self.team_names = team_names
+                QTimer.singleShot(0, self.on_team_names_loaded)
+                break
+            time.sleep(0.5)  # Не грузим CPU
+
+    def on_team_names_loaded(self):
+        self.apply_settings()
+        self.update_time_label()
+        print(f"Команды загружены: {self.team_names}")
 
     def set_preparation_time(self, minutes):
         return minutes * 60
