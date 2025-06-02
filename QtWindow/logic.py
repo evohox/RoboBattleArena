@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt, pyqtSignal, QTimer
 from PyQt5.QtGui import QFont
-from design import Ui_MainWindow
+from QtWindow.design import Ui_MainWindow
 from Tournament import Tournament
 from dotenv import load_dotenv
 

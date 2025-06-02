@@ -6,7 +6,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 from rpi_ws281x import PixelStrip, Color
 from dotenv import load_dotenv
 from Tournament import Tournament
-from LEDController import LEDController
+from RaspberryGPIO.LEDController import LEDController
 
 
 load_dotenv()

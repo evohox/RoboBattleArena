@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QTimer, Qt
-from settings import SettingsDialog
+from QtWindow.settings import SettingsDialog
 
 
 class Ui_MainWindow(object):
