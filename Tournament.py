@@ -40,6 +40,8 @@ class Tournament:
         def get_team_names(data):
             try:
                 self.teams_names.append(process_overlay_data(data))
+                print("Названия команд: ", self.teams_names)
+
             except Exception as e:
                 print("[timer] Ошибка при парсинге времени:", e)
 
@@ -81,7 +83,6 @@ class Tournament:
             self.sio.emit("BUTTONS: Preparing start.", self.id)
 
     def get_team_names(self):
-        print("Названия команд: ", self.teams_names)
         return self.teams_names
 
     def disconnect(self):
