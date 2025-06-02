@@ -43,6 +43,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.status = "Подготовка"
 
         self.team_names = ["Загрузка...", "Загрузка..."]
+        self.prev_teams = self.team_names
         self.apply_settings()
         self.update_time_label()
 
@@ -56,7 +57,7 @@ class Window(QMainWindow, Ui_MainWindow):
     def load_team_names(self):
         while self.state == "Idle":
             team_names = self.tournament.get_team_names()
-            if team_names != ["Загрузка...", "Загрузка..."]:
+            if team_names != self.prev_teams:
                 self.team_names = team_names
                 QTimer.singleShot(0, self.on_team_names_loaded)
                 break
@@ -155,6 +156,7 @@ class Window(QMainWindow, Ui_MainWindow):
         self.status = "Подготовка"
         self.initial_time = self.set_preparation_time(self.preparation_time)
         self.time_left = self.initial_time
+        self.prev_teams = self.team_names
         self.get_team_names()
         self.update_time_label()
 
@@ -173,7 +175,6 @@ class Window(QMainWindow, Ui_MainWindow):
                 except Exception as e:
                     print(f"Ошибка отправки: {e}")
                 self.prepare_end.emit()
-                print("WAAAA")
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
