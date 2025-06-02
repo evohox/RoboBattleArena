@@ -36,7 +36,7 @@ class Tournament:
             self.id = id
             print(f"ID поединка: {id}")
 
-        @self.sio.on("BACK-END: Overlay data sent", handle_external_data)
+        @self.sio.on("BACK-END: Overlay data sent")
         async def handle_external_data(data):
             print("[proxy] Получены данные:", data)
             try:
