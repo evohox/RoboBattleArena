@@ -218,4 +218,5 @@ class Window(QMainWindow, Ui_MainWindow):
 
     def get_team_names(self):
         self.team_names = self.tournament.get_team_names()
+        self.apply_settings()
         print(self.team_names)
