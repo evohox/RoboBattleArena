@@ -5,8 +5,8 @@ import threading
 
 FIFO = "/tmp/sound_pipe"
 START_FILE = "Start_sound.wav"
-STOP_FILE = "Stop_sound.mp3"
-READY_FILE = "Ready_sound.mp3"
+STOP_FILE = "Stop_sound.wav"
+READY_FILE = "Ready_sound.wav"
 
 sound_file = START_FILE
 
