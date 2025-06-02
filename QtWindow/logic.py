@@ -56,11 +56,11 @@ class Window(QMainWindow, Ui_MainWindow):
     def load_team_names(self):
         while self.state == "Idle":
             team_names = self.tournament.get_team_names()
-            print(self.team_names, team_names)
             if team_names != self.team_names:
                 self.team_names = team_names
                 QTimer.singleShot(0, self.on_team_names_loaded)
-                break
+                if self.state != "Idle":
+                    break
 
             time.sleep(0.1)  # Не грузим CPU
 
