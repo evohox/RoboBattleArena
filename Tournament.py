@@ -37,9 +37,9 @@ class Tournament:
             print(f"ID поединка: {id}")
 
         @self.sio.on("BACK-END: Overlay data sent")
-        def get_team_names(data):
+        def get_teams_names(data):
             try:
-                self.teams_names.append(process_overlay_data(data))
+                self.teams_names = process_overlay_data(data)
                 print("Названия команд: ", self.teams_names)
 
             except Exception as e:
