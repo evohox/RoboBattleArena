@@ -44,8 +44,6 @@ class Window(QMainWindow, Ui_MainWindow):
         while self.team_names == ["Загрузка...", "Загрузка..."]:
             print(self.team_names)
             self.get_team_names()
-            self.apply_settings()
-            self.update_time_label()
             if self.team_names != ["Загрузка...", "Загрузка..."]:
                 print(self.team_names)
 
@@ -147,6 +145,7 @@ class Window(QMainWindow, Ui_MainWindow):
         """Обновляем оставшееся время каждую секунду."""
         if self.time_left <= 0:
             if self.status == "Подготовка":
+                print("WAAAA")
                 self.initial_time = 3 * 60
                 self.time_left = self.initial_time + 3
                 self.status = "Бой"
@@ -162,6 +161,7 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
                 self.update_time_label()  # Обновляем метку таймера
+                print("HEHEHE")
                 QTimer.singleShot(1000, self.update_window)  # Обновляем окно
         else:
             self.time_left -= 1  # Уменьшаем оставшееся время
