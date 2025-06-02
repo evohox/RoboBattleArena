@@ -37,7 +37,7 @@ class Tournament:
             print(f"ID поединка: {id}")
 
         @self.sio.on("BACK-END: Overlay data sent")
-        async def handle_external_data(data):
+        def handle_external_data(data):
             print("[proxy] Получены данные:", data)
             try:
                 self.teams_names = self.process_overlay_data(data)
@@ -45,6 +45,10 @@ class Tournament:
 
             except Exception as e:
                 print("[timer] Ошибка при парсинге:", e)
+
+        @self.sio.on("*")
+        def catch_all(event, data=None):
+            print(f"[Catch-all] Событие: {event}, данные: {data}")
 
     def process_overlay_data(raw_data: Dict[str, Any]) -> Dict[str, Any]:
         return [raw_data.get("team1", "Команда 1"), raw_data.get("team2", "Команда 2")]
