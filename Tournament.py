@@ -81,6 +81,7 @@ class Tournament:
             self.sio.emit("BUTTONS: Preparing start.", self.id)
 
     def get_team_names(self):
+        print("Названия команд: ", self.teams_names)
         return self.teams_names
 
     def disconnect(self):
