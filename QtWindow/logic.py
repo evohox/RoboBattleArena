@@ -60,8 +60,10 @@ class Window(QMainWindow, Ui_MainWindow):
             if team_names != self.prev_teams:
                 self.team_names = team_names
                 QTimer.singleShot(0, self.on_team_names_loaded)
+                self.prev_teams = self.team_names
                 break
-            time.sleep(0.5)  # Не грузим CPU
+
+            time.sleep(0.1)  # Не грузим CPU
 
     def on_team_names_loaded(self):
         self.apply_settings()
@@ -156,7 +158,6 @@ class Window(QMainWindow, Ui_MainWindow):
         self.status = "Подготовка"
         self.initial_time = self.set_preparation_time(self.preparation_time)
         self.time_left = self.initial_time
-        self.prev_teams = self.team_names
         self.get_team_names()
         self.update_time_label()
 
