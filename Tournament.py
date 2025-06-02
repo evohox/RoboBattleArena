@@ -81,7 +81,7 @@ class Tournament:
             self.sio.emit("BUTTONS: Preparing start.", self.id)
 
     def get_team_names(self):
-        return [self.teams_names["team1"], self.teams_names["team2"]]
+        return self.teams_names
 
     def disconnect(self):
         """Отключается от сервера."""
