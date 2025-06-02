@@ -15,7 +15,7 @@ class Tournament:
 
         # Подключение к серверу и авторизация
         self.connect()
-        self.teams_names = ["", ""]
+        self.teams_names = ["Загрузка...", "Загрузка..."]
 
     def register_handlers(self):
         """Регистрирует все обработчики событий."""

@@ -41,9 +41,13 @@ class Window(QMainWindow, Ui_MainWindow):
         self.state = "Idle"  # Начальное состояние таймера
         self.status = "Подготовка"
 
-        self.team_names = ["Загрузка...", "Загрузка..."]
-        self.apply_settings()
-        QTimer.singleShot(2000, self.get_team_names)  # обновит позже
+        while self.team_names == ["Загрузка...", "Загрузка..."]:
+            print(self.team_names)
+            self.get_team_names()
+            self.apply_settings()
+            self.update_time_label()
+            if self.team_names != ["Загрузка...", "Загрузка..."]:
+                print(self.team_names)
 
         # Устанавливаем время подготовки
         self.set_preparation_time(self.preparation_time)
@@ -158,7 +162,7 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
                 self.update_time_label()  # Обновляем метку таймера
-                QTimer.singleShot(1000, self.update_window)
+                QTimer.singleShot(1000, self.update_window)  # Обновляем окно
         else:
             self.time_left -= 1  # Уменьшаем оставшееся время
             self.update_time_label()  # Обновляем метку времени
