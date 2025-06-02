@@ -162,7 +162,6 @@ class Window(QMainWindow, Ui_MainWindow):
         """Обновляем оставшееся время каждую секунду."""
         if self.time_left <= 0:
             if self.status == "Подготовка":
-                print("WAAAA")
                 self.initial_time = 3 * 60
                 self.time_left = self.initial_time + 3
                 self.status = "Бой"
@@ -174,6 +173,7 @@ class Window(QMainWindow, Ui_MainWindow):
                 except Exception as e:
                     print(f"Ошибка отправки: {e}")
                 self.prepare_end.emit()
+                print("WAAAA")
             else:
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
