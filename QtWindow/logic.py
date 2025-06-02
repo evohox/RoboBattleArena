@@ -41,13 +41,13 @@ class Window(QMainWindow, Ui_MainWindow):
         self.state = "Idle"  # Начальное состояние таймера
         self.status = "Подготовка"
 
-        print(self.team_names)
-
         while self.team_names == ["", ""]:
             print(self.team_names)
             self.get_team_names()
             self.apply_settings()
             self.update_time_label()
+            if self.team_names != ["", ""]:
+                print(self.team_names)
 
         # Устанавливаем время подготовки
         self.set_preparation_time(self.preparation_time)
