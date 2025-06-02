@@ -38,6 +38,7 @@ class Tournament:
 
         @self.sio.on("BACK-END: Overlay data sent")
         def handle_external_data(data):
+            print("[proxy] Получены данные:", data)
             try:
                 self.teams_names = self.process_overlay_data(data)
                 print("Названия команд: ", self.teams_names)
