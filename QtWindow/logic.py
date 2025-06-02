@@ -54,9 +54,9 @@ class Window(QMainWindow, Ui_MainWindow):
         self.update_time_label()  # Обновляем метку времени
 
     def load_team_names(self):
-        while True:
+        while self.state == "Idle":
             team_names = self.tournament.get_team_names()
-            if team_names != ["Загрузка...", "Загрузка..."] and self.state == "Idle":
+            if team_names != ["Загрузка...", "Загрузка..."]:
                 self.team_names = team_names
                 QTimer.singleShot(0, self.on_team_names_loaded)
                 break
@@ -132,13 +132,13 @@ class Window(QMainWindow, Ui_MainWindow):
     def start_timer(self):
         """Запускаем таймер."""
         self.state = "Ongoing"  # Меняем состояние на "Идет"
-        # self.timer.start()  # Запускаем таймер
+        self.timer.start()  # Запускаем таймер
         self.update_time_label()  # Обновляем метку времени
 
     def pause_timer(self):
         """Ставим таймер на паузу."""
         self.state = "Pause"  # Меняем состояние на "Пауза"
-        # self.timer.stop()  # Останавливаем таймер
+        self.timer.stop()  # Останавливаем таймер
         self.update_time_label()  # Обновляем метку времени
 
     def restart_window(self):
@@ -175,7 +175,7 @@ class Window(QMainWindow, Ui_MainWindow):
                     print(f"Ошибка отправки: {e}")
                 self.prepare_end.emit()
             else:
-                # self.timer.stop()  # Останавливаем таймер, если время вышло
+                self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
                 self.update_time_label()  # Обновляем метку таймера
                 print("HEHEHE")
