@@ -208,5 +208,7 @@ class Window(QMainWindow, Ui_MainWindow):
             raise Exception("Error with state")
 
     def get_team_names(self):
+        self.tournament.disconnect()
+        self.tournament.connect()
         self.team_names = self.tournament.get_team_names()
         print(self.team_names)
