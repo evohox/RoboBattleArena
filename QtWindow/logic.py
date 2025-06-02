@@ -162,7 +162,6 @@ class Window(QMainWindow, Ui_MainWindow):
                 self.timer.stop()  # Останавливаем таймер, если время вышло
                 self.state = "End"  # Меняем состояние на "End"
                 self.update_time_label()  # Обновляем метку таймера
-                # time.sleep(30)  # Ждём 30 секунд
                 self.update_window()  # Обновляем окно
         else:
             self.time_left -= 1  # Уменьшаем оставшееся время
