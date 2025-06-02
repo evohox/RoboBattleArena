@@ -46,6 +46,7 @@ class Window(QMainWindow, Ui_MainWindow):
         while self.team_names == ["", ""]:
             print(self.team_names)
             self.get_team_names()
+            self.apply_settings()
             self.update_time_label()
 
         # Устанавливаем время подготовки

@@ -154,3 +154,8 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Arena"))
+
+    def apply_settings(self):
+        self.team1_label.setText(self.team_names[0])
+        if len(self.team_names) > 1:
+            self.team2_label.setText(self.team_names[1])
