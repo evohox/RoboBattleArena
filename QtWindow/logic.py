@@ -34,6 +34,10 @@ class Window(QMainWindow, Ui_MainWindow):
 
         self.team_names = self.tournament.get_team_names()
 
+        while "загрузка..." in self.team_names:
+            self.get_team_names()
+            self.update_time_label()
+
         # Инициализация переменных
         self.initial_time = self.set_preparation_time(self.preparation_time)
         self.time_left = self.initial_time  # Оставшееся время
@@ -208,7 +212,5 @@ class Window(QMainWindow, Ui_MainWindow):
             raise Exception("Error with state")
 
     def get_team_names(self):
-        self.tournament.disconnect()
-        self.tournament.connect()
         self.team_names = self.tournament.get_team_names()
         print(self.team_names)
