@@ -1,8 +1,8 @@
 import sys
 import threading
 from PyQt5.QtWidgets import QApplication
-from logic import Window
-from RpyGPIO import GPIOHandler
+from QtWindow.logic import Window
+from GPIO.RpyGPIO import GPIOHandler
 
 
 def application():
