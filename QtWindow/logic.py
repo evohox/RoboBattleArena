@@ -24,8 +24,10 @@ class Window(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()  # Инициализируем родительский класс
         self.setupUi(self)  # Настраиваем интерфейс
-
-        self.tournament = Tournament(api_url=api_url)
+        self.connetctionStatus = 0
+        if self.connetctionStatus == 0:
+            self.tournament = Tournament(api_url=api_url)
+            self.connetctionStatus = 1
 
         self.team_update_timer = QTimer()
         self.team_update_timer.start(1000)
@@ -55,6 +57,7 @@ class Window(QMainWindow, Ui_MainWindow):
             self.restart_window()
         elif event.key() == Qt.Key_Escape:
             self.tournament.disconnect()
+            self.connetctionStatus = 0
             self.esc_btn.emit()
             QApplication.quit()
         elif event.key() == Qt.Key_Left:
@@ -118,6 +121,7 @@ class Window(QMainWindow, Ui_MainWindow):
         """Перезапускаем программу."""
         print("Перезапуск программы...")
         self.tournament.disconnect()
+        self.connetctionStatus = 0
         python = sys.executable
         os.execv(python, [python] + sys.argv)
 
