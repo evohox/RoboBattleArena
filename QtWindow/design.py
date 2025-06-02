@@ -29,7 +29,7 @@ class Ui_MainWindow(object):
         # Устанавливаем фон через стиль
         self.central_widget.setStyleSheet(
             "QWidget {"
-            "background-image: url(background.jpg);"
+            "background-image: url(QtWindow/background.jpg);"
             "background-position: center;"
             "background-repeat: no-repeat;"
             "background-size: cover;"
