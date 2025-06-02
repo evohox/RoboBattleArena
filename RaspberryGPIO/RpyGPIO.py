@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 from Tournament import Tournament
 from RaspberryGPIO.LEDController import LEDController
 
-
 load_dotenv()
 api_url=os.getenv("API_URL")
 

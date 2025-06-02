@@ -73,7 +73,7 @@ class LEDController:
             self.set_color(Color(r, g, b), team=team)
             time.sleep(delay)
 
-    def circle_color(self, first_color: Color, second_color: Color, state_checker: function, frequency: int=100):
+    def circle_color(self, first_color: Color, second_color: Color, state_checker, frequency: int=100):
         """Движение бегущей строки
         Args:
             first_color (Color): Основной цвет.
