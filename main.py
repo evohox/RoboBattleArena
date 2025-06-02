@@ -2,7 +2,7 @@ import sys
 import threading
 from PyQt5.QtWidgets import QApplication
 from QtWindow.logic import Window
-from GPIO.RpyGPIO import GPIOHandler
+from RaspberryGPIO.RpyGPIO import GPIOHandler
 
 
 def application():
