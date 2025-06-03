@@ -19,9 +19,6 @@ class Ui_MainWindow(object):
         MainWindow.setWindowFlags(Qt.FramelessWindowHint)
         MainWindow.showFullScreen()
 
-        self.team_update_timer = QTimer()
-        self.team_update_timer.start(1000)
-
         # Главный контейнер (фон)
         self.central_widget = QWidget(MainWindow)
         MainWindow.setCentralWidget(self.central_widget)

@@ -35,7 +35,6 @@ class Window(QMainWindow, Ui_MainWindow):
 
         self.team_names = self.tournament.get_team_names()
 
-
         # Инициализация переменных
         self.initial_time = self.set_preparation_time(self.preparation_time)
         self.time_left = self.initial_time  # Оставшееся время
