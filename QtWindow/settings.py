@@ -24,11 +24,6 @@ class SettingsDialog(QDialog):
         team_group = QLabel("Настройки команд")
         layout.addWidget(team_group)
 
-        self.team_count_combo = QComboBox()
-        self.team_count_combo.addItems(["1 команда", "2 команды"])
-        layout.addWidget(QLabel("Количество команд:"))
-        layout.addWidget(self.team_count_combo)
-
         self.team1_edit = QLineEdit("Команда 1")
         self.team2_edit = QLineEdit("Команда 2")
         layout.addWidget(QLabel("Название команды 1:"))
